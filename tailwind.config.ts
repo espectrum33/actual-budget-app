@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+                gigilove: {
+                    orange: "#F97316",
+                    yellow: "#FEF08A",
+                    purple: "#9B76ED",
+                    blue: "#38BDF8"
+                }
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,12 +91,36 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+                'fade-in': {
+                    '0%': {
+                        opacity: '0',
+                        transform: 'translateY(10px)'
+                    },
+                    '100%': {
+                        opacity: '1',
+                        transform: 'translateY(0)'
+                    }
+                },
+                'bounce-light': {
+                    '0%, 100%': {
+                        transform: 'translateY(0)',
+                    },
+                    '50%': {
+                        transform: 'translateY(-5px)',
+                    }
+                }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+				'accordion-up': 'accordion-up 0.2s ease-out',
+                'fade-in': 'fade-in 0.5s ease-out',
+                'bounce-light': 'bounce-light 2s infinite ease-in-out'
+			},
+            fontFamily: {
+                'poppins': ['Poppins', 'sans-serif'],
+                'roboto': ['Roboto', 'sans-serif']
+            }
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
