@@ -1,4 +1,3 @@
-
 import { Facebook, Instagram, Twitter, Youtube, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

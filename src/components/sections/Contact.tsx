@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -155,8 +154,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="font-medium text-lg">Email</h4>
-                    <p className="text-gray-600 font-roboto">info@gigilove.com</p>
-                    <p className="text-gray-600 font-roboto">reservas@gigilove.com</p>
+                    <p className="text-gray-600 font-roboto">info@recreacionymagia.com</p>
+                    <p className="text-gray-600 font-roboto">reservas@recreacionymagia.com</p>
                   </div>
                 </div>
                 <div className="flex items-start">

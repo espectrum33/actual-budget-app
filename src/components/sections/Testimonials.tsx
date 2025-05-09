@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,7 @@ const Testimonials = () => {
       id: 1,
       name: "Ana Rodríguez",
       role: "Madre",
-      content: "Contratamos a GigiLove para el cumpleaños de mi hija y fue una experiencia increíble. Los animadores fueron energéticos y muy profesionales. Todos los niños se divirtieron muchísimo.",
+      content: "Contratamos a Recreación y Magia para el cumpleaños de mi hija y fue una experiencia increíble. Los animadores fueron energéticos y muy profesionales. Todos los niños se divirtieron muchísimo.",
       rating: 5,
       image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80"
     },
@@ -26,7 +25,7 @@ const Testimonials = () => {
       id: 3,
       name: "Carolina Martínez",
       role: "Organizadora de eventos",
-      content: "He trabajado con GigiLove en múltiples ocasiones y siempre entregan un servicio de primera. Su equipo es responsable y profesional, y saben adaptarse a cualquier tipo de evento.",
+      content: "He trabajado con Recreación y Magia en múltiples ocasiones y siempre entregan un servicio de primera. Su equipo es responsable y profesional, y saben adaptarse a cualquier tipo de evento.",
       rating: 5,
       image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80"
     },

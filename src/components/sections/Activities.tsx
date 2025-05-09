@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Sparkles, Users, PartyPopper, Music, Cake, Gift } from "lucide-react";
 

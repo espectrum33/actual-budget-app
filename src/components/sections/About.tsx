@@ -6,7 +6,7 @@ const About = () => {
     {
       name: "Gisela López",
       role: "Directora Creativa",
-      bio: "Con más de 10 años de experiencia en recreación y animación infantil, Gisela es el corazón de GigiLove Recreaciones.",
+      bio: "Con más de 10 años de experiencia en recreación y animación infantil, Gisela es el corazón de Recreación y Magia.",
       image: "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
     },
     {
@@ -32,7 +32,7 @@ const About = () => {
               Sobre <span className="bg-gradient-to-r from-gigilove-orange to-gigilove-purple bg-clip-text text-transparent">Nosotros</span>
             </h2>
             <p className="text-gray-600 text-lg mb-6 font-roboto">
-              En GigiLove Recreaciones nos dedicamos a crear experiencias memorables para personas de todas las edades. Fundada en 2015, nuestra empresa ha crecido hasta convertirse en un referente de calidad y creatividad en el sector de la recreación y entretenimiento.
+              En Recreación y Magia nos dedicamos a crear experiencias memorables para personas de todas las edades. Fundada en 2015, nuestra empresa ha crecido hasta convertirse en un referente de calidad y creatividad en el sector de la recreación y entretenimiento.
             </p>
             <p className="text-gray-600 text-lg mb-6 font-roboto">
               Nuestro equipo está formado por profesionales apasionados que aportan energía, originalidad y entusiasmo a cada uno de nuestros eventos. Nos esforzamos por superar las expectativas de nuestros clientes, ofreciendo servicios personalizados que se adaptan a sus necesidades específicas.
@@ -67,7 +67,7 @@ const About = () => {
           <div className="relative">
             <div className="grid grid-cols-2 gap-4 md:gap-6">
               <img
-                src="https://images.unsplash.com/photo-1491013516836-7db643ee125a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
+                src="https://images.unsplash.com/photo-1545558014-8692077e9b5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
                 alt="Niños jugando y divirtiéndose"
                 className="rounded-lg shadow-lg object-cover h-48 md:h-64 w-full"
               />
@@ -77,12 +77,12 @@ const About = () => {
                 className="rounded-lg shadow-lg object-cover h-48 md:h-64 w-full mt-8 md:mt-12"
               />
               <img
-                src="https://images.unsplash.com/photo-1535572290543-960a8046f5af?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
+                src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGNoaWxkcmVuJTIwcGxheWluZ3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=1000&q=80"
                 alt="Actividades infantiles al aire libre"
                 className="rounded-lg shadow-lg object-cover h-48 md:h-64 w-full"
               />
               <img
-                src="https://images.unsplash.com/photo-1576687790126-2c1ffdc94d99?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
+                src="https://images.unsplash.com/photo-1560169897-fc0cdbdfa4d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8Y2hpbGRyZW4lMjBwYXJ0eXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=1000&q=80"
                 alt="Animación infantil y recreación"
                 className="rounded-lg shadow-lg object-cover h-48 md:h-64 w-full mt-8 md:mt-12"
               />
