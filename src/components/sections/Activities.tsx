@@ -1,43 +1,43 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Activity, Music, Users, Gift, Camera, Heart } from "lucide-react";
+import { MagicWand, Child, Party, Music, Cake, Gift } from "lucide-react";
 
 const Activities = () => {
   const activities = [
     {
-      title: "Animación Infantil",
-      description: "Contamos con un equipo de animadores profesionales que harán de tu evento una experiencia inolvidable.",
-      icon: <Users className="h-10 w-10 text-gigilove-purple" />,
+      title: "Shows de Magia",
+      description: "Espectáculos de magia e ilusionismo profesionales especialmente diseñados para niños y familias.",
+      icon: <MagicWand className="h-10 w-10 text-gigilove-purple" />,
       color: "bg-gigilove-purple/10",
     },
     {
-      title: "Shows Musicales",
-      description: "Presentaciones musicales en vivo para amenizar cualquier tipo de evento o celebración.",
-      icon: <Music className="h-10 w-10 text-gigilove-orange" />,
+      title: "Animación Infantil",
+      description: "Juegos, dinámicas y actividades divertidas dirigidas por nuestro equipo de animadores profesionales.",
+      icon: <Child className="h-10 w-10 text-gigilove-orange" />,
       color: "bg-gigilove-orange/10",
     },
     {
-      title: "Juegos y Dinámicas",
-      description: "Gran variedad de actividades lúdicas y recreativas para todas las edades.",
-      icon: <Activity className="h-10 w-10 text-gigilove-blue" />,
+      title: "Fiestas Temáticas",
+      description: "Organizamos fiestas con temáticas personalizadas según los gustos y preferencias de los niños.",
+      icon: <Party className="h-10 w-10 text-gigilove-blue" />,
       color: "bg-gigilove-blue/10",
     },
     {
-      title: "Eventos Corporativos",
-      description: "Organización de eventos para empresas, team building y actividades para empleados.",
-      icon: <Gift className="h-10 w-10 text-gigilove-purple" />,
+      title: "Música y Baile",
+      description: "Actividades musicales interactivas que fomentan el movimiento y la expresión corporal.",
+      icon: <Music className="h-10 w-10 text-gigilove-purple" />,
       color: "bg-gigilove-purple/10",
     },
     {
-      title: "Fotografía y Video",
-      description: "Capturamos los momentos más especiales de tu evento para que puedas revivirlos cuando quieras.",
-      icon: <Camera className="h-10 w-10 text-gigilove-orange" />,
+      title: "Celebraciones Especiales",
+      description: "Organizamos cumpleaños, bautizos, comuniones y todo tipo de celebraciones infantiles.",
+      icon: <Cake className="h-10 w-10 text-gigilove-orange" />,
       color: "bg-gigilove-orange/10",
     },
     {
-      title: "Eventos Especiales",
-      description: "Celebraciones temáticas, cumpleaños, bodas, baby showers y mucho más.",
-      icon: <Heart className="h-10 w-10 text-gigilove-blue" />,
+      title: "Talleres Creativos",
+      description: "Talleres de manualidades, arte y creatividad para desarrollar la imaginación de los pequeños.",
+      icon: <Gift className="h-10 w-10 text-gigilove-blue" />,
       color: "bg-gigilove-blue/10",
     },
   ];
@@ -47,10 +47,10 @@ const Activities = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
-            Nuestras <span className="bg-gradient-to-r from-gigilove-orange to-gigilove-purple bg-clip-text text-transparent">Actividades</span>
+            Nuestros <span className="bg-gradient-to-r from-gigilove-orange to-gigilove-purple bg-clip-text text-transparent">Servicios Mágicos</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto font-roboto">
-            Ofrecemos una amplia gama de servicios de recreación para todo tipo de eventos y celebraciones.
+            Ofrecemos una amplia gama de actividades y espectáculos de magia para hacer de cada evento una experiencia única.
           </p>
         </div>
 

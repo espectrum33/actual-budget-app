@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MagicWand } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Header = () => {
@@ -36,10 +36,11 @@ const Header = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <a href="#" className="flex items-center">
+              <MagicWand className="h-6 w-6 mr-2 text-gigilove-purple" />
               <span className="text-2xl font-bold font-poppins bg-gradient-to-r from-gigilove-orange to-gigilove-purple bg-clip-text text-transparent">
-                GigiLove
+                Recreación
               </span>
-              <span className="text-2xl font-poppins ml-1">Recreaciones</span>
+              <span className="text-2xl font-poppins ml-1">y Magia</span>
             </a>
           </div>
 
@@ -116,7 +117,7 @@ const NavLinks = ({ mobile, onClick }: NavLinksProps) => {
           mobile ? "w-full" : ""
         } bg-gradient-to-r from-gigilove-orange to-gigilove-purple hover:opacity-90 transition-all duration-300`}
       >
-        ¡Regístrate!
+        ¡Reserva Ahora!
       </Button>
     </>
   );
