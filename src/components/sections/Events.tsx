@@ -1,4 +1,3 @@
-
 import { Calendar, MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -10,7 +9,7 @@ const Events = () => {
       date: "15 de Junio, 2023",
       time: "10:00 AM - 4:00 PM",
       location: "Parque Central",
-      image: "https://images.unsplash.com/photo-1576328077645-8dd5cedd4237?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGNoaWxkcmVuJTIwcGxheWluZ3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60",
+      image: "https://images.unsplash.com/photo-1602963966523-7cf421582406?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGNoaWxkcmVuJTIwcGxheWluZ3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60",
       description: "Un día lleno de diversión con juegos tradicionales, inflables, pintura facial y mucho más."
     },
     {
@@ -19,7 +18,7 @@ const Events = () => {
       date: "22 de Junio, 2023",
       time: "2:00 PM - 6:00 PM",
       location: "Centro Comunitario Las Palmas",
-      image: "https://images.unsplash.com/photo-1536640712-4d4c36ff0e4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTZ8fGZhbWlseSUyMGFjdGl2aXRpZXN8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+      image: "https://images.unsplash.com/photo-1511933617088-859b414a42a4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTZ8fGZhbWlseSUyMGFjdGl2aXRpZXN8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
       description: "Aprende actividades divertidas que puedes realizar con toda la familia en casa."
     },
     {
@@ -28,7 +27,7 @@ const Events = () => {
       date: "30 de Junio, 2023",
       time: "7:00 PM - 10:00 PM",
       location: "Salón de Eventos Estrella",
-      image: "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8Y29zdHVtZSUyMHBhcnR5fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60",
+      image: "https://images.unsplash.com/photo-1607457574195-1063756e39ec?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8Y29zdHVtZSUyMHBhcnR5fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60",
       description: "Ven con tu mejor disfraz y disfruta de una noche llena de música, concursos y premios."
     },
   ];
