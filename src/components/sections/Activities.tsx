@@ -1,25 +1,24 @@
-
 import { Card, CardContent } from "@/components/ui/card";
-import { MagicWand, Child, Party, Music, Cake, Gift } from "lucide-react";
+import { Sparkles, Users, PartyPopper, Music, Cake, Gift } from "lucide-react";
 
 const Activities = () => {
   const activities = [
     {
       title: "Shows de Magia",
       description: "Espectáculos de magia e ilusionismo profesionales especialmente diseñados para niños y familias.",
-      icon: <MagicWand className="h-10 w-10 text-gigilove-purple" />,
+      icon: <Sparkles className="h-10 w-10 text-gigilove-purple" />,
       color: "bg-gigilove-purple/10",
     },
     {
       title: "Animación Infantil",
       description: "Juegos, dinámicas y actividades divertidas dirigidas por nuestro equipo de animadores profesionales.",
-      icon: <Child className="h-10 w-10 text-gigilove-orange" />,
+      icon: <Users className="h-10 w-10 text-gigilove-orange" />,
       color: "bg-gigilove-orange/10",
     },
     {
       title: "Fiestas Temáticas",
       description: "Organizamos fiestas con temáticas personalizadas según los gustos y preferencias de los niños.",
-      icon: <Party className="h-10 w-10 text-gigilove-blue" />,
+      icon: <PartyPopper className="h-10 w-10 text-gigilove-blue" />,
       color: "bg-gigilove-blue/10",
     },
     {

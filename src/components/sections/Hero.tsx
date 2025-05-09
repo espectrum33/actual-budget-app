@@ -1,5 +1,5 @@
 
-import { ArrowRight, MagicWand, Child } from "lucide-react";
+import { ArrowRight, Sparkles, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Hero = () => {
@@ -36,7 +36,7 @@ const Hero = () => {
               className="bg-white/10 backdrop-blur-sm border-white hover:bg-white/20 text-white px-8 py-6 rounded-full text-lg font-medium shadow-lg flex items-center gap-2"
             >
               Servicios de Magia
-              <MagicWand className="w-5 h-5" />
+              <Sparkles className="w-5 h-5" />
             </Button>
           </div>
         </div>

@@ -1,5 +1,5 @@
 
-import { Facebook, Instagram, Twitter, Youtube, ArrowRight, MagicWand } from "lucide-react";
+import { Facebook, Instagram, Twitter, Youtube, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -11,7 +11,7 @@ const Footer = () => {
           <div>
             <div className="mb-4">
               <a href="#" className="flex items-center">
-                <MagicWand className="h-6 w-6 mr-2 text-gigilove-orange" />
+                <Sparkles className="h-6 w-6 mr-2 text-gigilove-orange" />
                 <span className="text-2xl font-bold font-poppins bg-gradient-to-r from-gigilove-orange to-gigilove-purple bg-clip-text text-transparent">
                   Recreación
                 </span>

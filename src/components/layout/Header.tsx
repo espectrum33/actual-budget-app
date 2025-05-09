@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Menu, X, MagicWand } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Header = () => {
@@ -36,7 +36,7 @@ const Header = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <a href="#" className="flex items-center">
-              <MagicWand className="h-6 w-6 mr-2 text-gigilove-purple" />
+              <Sparkles className="h-6 w-6 mr-2 text-gigilove-purple" />
               <span className="text-2xl font-bold font-poppins bg-gradient-to-r from-gigilove-orange to-gigilove-purple bg-clip-text text-transparent">
                 Recreación
               </span>
