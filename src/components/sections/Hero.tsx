@@ -1,6 +1,7 @@
 
-import { ArrowRight, Sparkles, Calendar } from "lucide-react";
+import { Calendar, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const Hero = () => {
   return (
@@ -8,20 +9,20 @@ const Hero = () => {
       id="hero" 
       className="relative min-h-screen flex items-center pt-16"
       style={{
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/lovable-uploads/38572e00-c447-4f9a-a673-0f2652b53da4.png')`,
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('https://images.unsplash.com/photo-1472162072942-cd5147eb3902?q=80&w=2069&auto=format&fit=crop')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-white/50 to-recreacion-blue/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-white/50 to-recreacion-blue/10"></div>
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="animate-float mb-8">
+          <div className="mb-8 rounded-full bg-white p-4 shadow-lg inline-block">
             <img 
-              src="/lovable-uploads/38572e00-c447-4f9a-a673-0f2652b53da4.png" 
+              src="https://images.unsplash.com/photo-1633613286991-611fe299c4be?q=80&w=2070&auto=format&fit=crop" 
               alt="Recreación y Magia" 
-              className="h-32 mx-auto"
+              className="h-24 w-24 object-cover rounded-full mx-auto"
             />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold font-comic mb-6 drop-shadow-sm">
