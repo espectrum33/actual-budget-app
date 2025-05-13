@@ -119,21 +119,37 @@ export default {
                     '50%': {
                         transform: 'translateY(-10px)',
                     }
-                }
+                },
+                'shimmer': {
+                    '0%': {
+                        backgroundPosition: '-500px 0',
+                    },
+                    '100%': {
+                        backgroundPosition: '500px 0',
+                    },
+                },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
                 'fade-in': 'fade-in 0.5s ease-out',
                 'bounce-light': 'bounce-light 2s infinite ease-in-out',
-                'float': 'float 3s infinite ease-in-out'
+                'float': 'float 3s infinite ease-in-out',
+                'shimmer': 'shimmer 2s infinite linear',
 			},
             fontFamily: {
                 'poppins': ['Poppins', 'sans-serif'],
                 'roboto': ['Roboto', 'sans-serif'],
                 'montserrat': ['Montserrat', 'sans-serif'],
                 'comic': ['"Comic Neue"', 'cursive']
-            }
+            },
+            backgroundSize: {
+                'size-200': '200% 200%',
+            },
+            backgroundPosition: {
+                'pos-0': '0% 0%',
+                'pos-100': '100% 100%',
+            },
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
