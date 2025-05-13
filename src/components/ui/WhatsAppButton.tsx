@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { WhatsApp, X } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface WhatsAppButtonProps {
@@ -66,7 +66,7 @@ const WhatsAppButton = ({ phoneNumber }: WhatsAppButtonProps) => {
           )}
         >
           <div className="relative">
-            <WhatsApp
+            <MessageCircle
               size={isOpen ? 28 : 32}
               className={cn(
                 "text-white transition-all duration-300",
