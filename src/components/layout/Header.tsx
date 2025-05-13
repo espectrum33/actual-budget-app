@@ -95,6 +95,7 @@ const NavLinks = ({ mobile, currentPath, onClick }: NavLinksProps) => {
     { name: "Actividades", href: "/actividades" },
     { name: "Sobre Nosotros", href: "/sobre-nosotros" },
     { name: "Eventos", href: "/eventos" },
+    { name: "Blog", href: "/blog" },
     { name: "Testimonios", href: "/testimonios" },
     { name: "Contacto", href: "/contacto" },
   ];

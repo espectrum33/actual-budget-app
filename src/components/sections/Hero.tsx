@@ -2,6 +2,7 @@
 import { Calendar, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
@@ -9,32 +10,52 @@ const Hero = () => {
       id="hero" 
       className="relative min-h-screen flex items-center pt-16"
       style={{
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('https://images.unsplash.com/photo-1602631985686-1bb0e6a8696e?q=80&w=2070&auto=format&fit=crop')`,
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/lovable-uploads/32ae9a08-8ead-4431-bdb3-decfd82923af.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-white/50 to-recreacion-blue/10"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-recreacion-blue/10"></div>
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="mb-8 rounded-full bg-white p-4 shadow-lg inline-block animate-float">
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 rounded-full bg-white p-4 shadow-lg inline-block"
+          >
             <img 
-              src="https://images.unsplash.com/photo-1587316495626-40d1108317f1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+              src="/lovable-uploads/32ae9a08-8ead-4431-bdb3-decfd82923af.png" 
               alt="Recreación y Magia" 
               className="h-24 w-24 object-cover rounded-full mx-auto"
             />
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold font-comic mb-6 drop-shadow-sm">
+          </motion.div>
+          <motion.h1 
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.7 }}
+            className="text-4xl md:text-6xl font-bold font-comic mb-6 drop-shadow-sm"
+          >
             <span className="block text-recreacion-blue">Recreación y</span>
             <span className="bg-gradient-to-r from-recreacion-purple to-recreacion-orange bg-clip-text text-transparent">
               Magia para Niños
             </span>
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-700 font-montserrat">
+          </motion.h1>
+          <motion.p 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.7 }}
+            className="text-xl md:text-2xl mb-8 text-gray-700 font-montserrat"
+          >
             Creamos momentos mágicos y experiencias inolvidables para los pequeños de la casa
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+          </motion.p>
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.7 }}
+            className="flex flex-col sm:flex-row justify-center gap-4"
+          >
             <Link to="/contacto">
               <Button className="cloud-btn bg-recreacion-yellow hover:bg-recreacion-yellow/90 text-black px-8 py-6 rounded-full text-lg font-medium flex items-center gap-2">
                 Reserva Tu Evento
@@ -50,7 +71,7 @@ const Hero = () => {
                 <Sparkles className="w-5 h-5" />
               </Button>
             </Link>
-          </div>
+          </motion.div>
         </div>
       </div>
       

@@ -1,3 +1,4 @@
+
 import { Facebook, Instagram, Twitter, Youtube, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,8 +11,8 @@ const Footer = () => {
           <div>
             <div className="mb-4">
               <a href="#" className="flex items-center">
-                <Sparkles className="h-6 w-6 mr-2 text-gigilove-orange" />
-                <span className="text-2xl font-bold font-poppins bg-gradient-to-r from-gigilove-orange to-gigilove-purple bg-clip-text text-transparent">
+                <Sparkles className="h-6 w-6 mr-2 text-recreacion-orange" />
+                <span className="text-2xl font-bold font-poppins bg-gradient-to-r from-recreacion-orange to-recreacion-purple bg-clip-text text-transparent">
                   Recreación
                 </span>
                 <span className="text-2xl font-poppins ml-1 text-white">y Magia</span>
@@ -21,16 +22,16 @@ const Footer = () => {
               Creando momentos mágicos y experiencias inolvidables para niños de todas las edades. Magia, diversión y aprendizaje en cada evento.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="bg-gigilove-purple/20 hover:bg-gigilove-purple/30 p-2 rounded-full transition-colors">
+              <a href="#" className="bg-recreacion-purple/20 hover:bg-recreacion-purple/30 p-2 rounded-full transition-colors">
                 <Facebook className="h-5 w-5 text-white" />
               </a>
-              <a href="#" className="bg-gigilove-purple/20 hover:bg-gigilove-purple/30 p-2 rounded-full transition-colors">
+              <a href="#" className="bg-recreacion-purple/20 hover:bg-recreacion-purple/30 p-2 rounded-full transition-colors">
                 <Instagram className="h-5 w-5 text-white" />
               </a>
-              <a href="#" className="bg-gigilove-purple/20 hover:bg-gigilove-purple/30 p-2 rounded-full transition-colors">
+              <a href="#" className="bg-recreacion-purple/20 hover:bg-recreacion-purple/30 p-2 rounded-full transition-colors">
                 <Twitter className="h-5 w-5 text-white" />
               </a>
-              <a href="#" className="bg-gigilove-purple/20 hover:bg-gigilove-purple/30 p-2 rounded-full transition-colors">
+              <a href="#" className="bg-recreacion-purple/20 hover:bg-recreacion-purple/30 p-2 rounded-full transition-colors">
                 <Youtube className="h-5 w-5 text-white" />
               </a>
             </div>
@@ -53,6 +54,9 @@ const Footer = () => {
               </li>
               <li>
                 <a href="#contact" className="text-gray-400 hover:text-white transition-colors">Contacto</a>
+              </li>
+              <li>
+                <a href="/blog" className="text-gray-400 hover:text-white transition-colors">Blog / Noticias</a>
               </li>
             </ul>
           </div>
@@ -86,9 +90,9 @@ const Footer = () => {
             <div className="flex space-x-2">
               <Input
                 placeholder="Tu correo electrónico"
-                className="bg-gray-800 border-gray-700 focus:border-gigilove-purple"
+                className="bg-gray-800 border-gray-700 focus:border-recreacion-purple"
               />
-              <Button className="bg-gradient-to-r from-gigilove-orange to-gigilove-purple hover:opacity-90">
+              <Button className="bg-gradient-to-r from-recreacion-orange to-recreacion-purple hover:opacity-90">
                 <ArrowRight className="h-5 w-5" />
               </Button>
             </div>
