@@ -63,11 +63,13 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-                gigilove: {
-                    orange: "#F97316",
-                    yellow: "#FEF08A",
-                    purple: "#9B76ED",
-                    blue: "#38BDF8"
+                recreacion: {
+                    blue: "#71C9F8",
+                    green: "#A6D785",
+                    yellow: "#FFE08A",
+                    pink: "#FFB5C5",
+                    purple: "#BBA5FF",
+                    orange: "#FF9966"
                 }
 			},
 			borderRadius: {
@@ -109,17 +111,28 @@ export default {
                     '50%': {
                         transform: 'translateY(-5px)',
                     }
+                },
+                'float': {
+                    '0%, 100%': {
+                        transform: 'translateY(0)',
+                    },
+                    '50%': {
+                        transform: 'translateY(-10px)',
+                    }
                 }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
                 'fade-in': 'fade-in 0.5s ease-out',
-                'bounce-light': 'bounce-light 2s infinite ease-in-out'
+                'bounce-light': 'bounce-light 2s infinite ease-in-out',
+                'float': 'float 3s infinite ease-in-out'
 			},
             fontFamily: {
                 'poppins': ['Poppins', 'sans-serif'],
-                'roboto': ['Roboto', 'sans-serif']
+                'roboto': ['Roboto', 'sans-serif'],
+                'montserrat': ['Montserrat', 'sans-serif'],
+                'comic': ['"Comic Neue"', 'cursive']
             }
 		}
 	},

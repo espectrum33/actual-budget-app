@@ -1,5 +1,5 @@
 
-import { ArrowRight, Sparkles, Users } from "lucide-react";
+import { ArrowRight, Sparkles, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Hero = () => {
@@ -8,32 +8,41 @@ const Hero = () => {
       id="hero" 
       className="relative min-h-screen flex items-center pt-16"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1596464716127-f2a82984de30?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80')`,
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/lovable-uploads/38572e00-c447-4f9a-a673-0f2652b53da4.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-30"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-white/50 to-recreacion-blue/20"></div>
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <div className="max-w-3xl mx-auto text-center text-white">
-          <h1 className="text-4xl md:text-6xl font-bold font-poppins mb-6 drop-shadow-lg">
-            <span className="block">Recreación y</span>
-            <span className="bg-gradient-to-r from-gigilove-yellow to-gigilove-blue bg-clip-text text-transparent">
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="animate-float mb-8">
+            <img 
+              src="/lovable-uploads/38572e00-c447-4f9a-a673-0f2652b53da4.png" 
+              alt="Recreación y Magia" 
+              className="h-32 mx-auto"
+            />
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold font-comic mb-6 drop-shadow-sm">
+            <span className="block text-recreacion-blue">Recreación y</span>
+            <span className="bg-gradient-to-r from-recreacion-purple to-recreacion-orange bg-clip-text text-transparent">
               Magia para Niños
             </span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-100 font-roboto drop-shadow-md">
+          <p className="text-xl md:text-2xl mb-8 text-gray-700 font-montserrat">
             Creamos momentos mágicos y experiencias inolvidables para los pequeños de la casa
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button className="bg-gigilove-orange hover:bg-gigilove-orange/90 text-white px-8 py-6 rounded-full text-lg font-medium shadow-lg transition-transform hover:scale-105 flex items-center gap-2">
-              Reserva Tu Evento
-              <ArrowRight className="w-5 h-5 animate-bounce-light" />
-            </Button>
+            <a href="#contact">
+              <Button className="cloud-btn bg-recreacion-yellow hover:bg-recreacion-yellow/90 text-black px-8 py-6 rounded-full text-lg font-medium flex items-center gap-2">
+                Reserva Tu Evento
+                <Calendar className="w-5 h-5" />
+              </Button>
+            </a>
             <Button 
               variant="outline" 
-              className="bg-white/10 backdrop-blur-sm border-white hover:bg-white/20 text-white px-8 py-6 rounded-full text-lg font-medium shadow-lg flex items-center gap-2"
+              className="border-2 border-recreacion-purple hover:bg-recreacion-purple/10 text-recreacion-purple px-8 py-6 rounded-full text-lg font-medium flex items-center gap-2"
             >
               Servicios de Magia
               <Sparkles className="w-5 h-5" />

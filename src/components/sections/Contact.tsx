@@ -1,9 +1,10 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Facebook } from "lucide-react";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -46,20 +47,20 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20 bg-gray-50">
+    <section id="contact" className="py-20 bg-recreacion-blue/5">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
-            <span className="bg-gradient-to-r from-gigilove-orange to-gigilove-purple bg-clip-text text-transparent">Contáctanos</span>
+          <h2 className="section-title">
+            <span className="text-recreacion-blue">Contáctanos</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto font-roboto">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto font-montserrat">
             Estamos aquí para responder tus preguntas y ayudarte a crear experiencias inolvidables
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <div className="bg-white p-8 rounded-xl shadow-lg">
-            <h3 className="text-2xl font-semibold mb-6 font-poppins">Envíanos un Mensaje</h3>
+          <div className="bg-white p-8 rounded-2xl shadow-lg">
+            <h3 className="text-2xl font-bold mb-6 font-comic text-recreacion-blue">Envíanos un Mensaje</h3>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -72,7 +73,7 @@ const Contact = () => {
                   onChange={handleChange}
                   placeholder="Tu nombre"
                   required
-                  className="w-full"
+                  className="w-full rounded-xl"
                 />
               </div>
               <div>
@@ -87,7 +88,7 @@ const Contact = () => {
                   onChange={handleChange}
                   placeholder="tu@email.com"
                   required
-                  className="w-full"
+                  className="w-full rounded-xl"
                 />
               </div>
               <div>
@@ -100,7 +101,7 @@ const Contact = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="Tu número telefónico"
-                  className="w-full"
+                  className="w-full rounded-xl"
                 />
               </div>
               <div>
@@ -115,12 +116,12 @@ const Contact = () => {
                   placeholder="Cuéntanos sobre tu evento o pregúntanos lo que necesites saber"
                   rows={4}
                   required
-                  className="w-full"
+                  className="w-full rounded-xl"
                 />
               </div>
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-gigilove-orange to-gigilove-purple text-white font-medium py-3 px-6 rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                className="w-full cloud-btn bg-recreacion-green text-black font-medium py-3 px-6 rounded-xl hover:bg-recreacion-green/90 transition-all flex items-center justify-center gap-2"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -136,44 +137,49 @@ const Contact = () => {
 
           <div className="flex flex-col justify-between">
             <div>
-              <h3 className="text-2xl font-semibold mb-6 font-poppins">Información de Contacto</h3>
+              <h3 className="text-2xl font-bold mb-6 font-comic text-recreacion-orange">Información de Contacto</h3>
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <div className="bg-gigilove-purple/10 p-3 rounded-full mr-4">
-                    <Phone className="text-gigilove-purple h-6 w-6" />
+                  <div className="bg-recreacion-pink/20 p-3 rounded-full mr-4">
+                    <Phone className="text-recreacion-pink h-6 w-6" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-lg">Teléfono</h4>
-                    <p className="text-gray-600 font-roboto">+123 456 7890</p>
-                    <p className="text-gray-600 font-roboto">+123 456 7891</p>
+                    <h4 className="font-medium text-lg">Teléfonos</h4>
+                    <p className="text-gray-600 font-montserrat">5638221 - 4543752</p>
+                    <p className="text-gray-600 font-montserrat">3115757089 - 3114824976</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="bg-gigilove-orange/10 p-3 rounded-full mr-4">
-                    <Mail className="text-gigilove-orange h-6 w-6" />
+                  <div className="bg-recreacion-orange/20 p-3 rounded-full mr-4">
+                    <Mail className="text-recreacion-orange h-6 w-6" />
                   </div>
                   <div>
                     <h4 className="font-medium text-lg">Email</h4>
-                    <p className="text-gray-600 font-roboto">info@recreacionymagia.com</p>
-                    <p className="text-gray-600 font-roboto">reservas@recreacionymagia.com</p>
+                    <p className="text-gray-600 font-montserrat">eventos@recreacionymagia.com</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="bg-gigilove-blue/10 p-3 rounded-full mr-4">
-                    <MapPin className="text-gigilove-blue h-6 w-6" />
+                  <div className="bg-recreacion-blue/20 p-3 rounded-full mr-4">
+                    <Facebook className="text-recreacion-blue h-6 w-6" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-lg">Ubicación</h4>
-                    <p className="text-gray-600 font-roboto">Avenida Principal #123</p>
-                    <p className="text-gray-600 font-roboto">Ciudad, País</p>
+                    <h4 className="font-medium text-lg">Facebook</h4>
+                    <a 
+                      href="https://www.facebook.com/recreacionymagia?fref=ts" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-recreacion-blue hover:underline font-montserrat"
+                    >
+                      /recreacionymagia
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="mt-8 lg:mt-0">
-              <h3 className="text-2xl font-semibold mb-6 font-poppins">Horario de Atención</h3>
-              <div className="bg-white p-6 rounded-xl shadow-lg">
+              <h3 className="text-2xl font-bold mb-6 font-comic text-recreacion-green">Horario de Atención</h3>
+              <div className="bg-white p-6 rounded-2xl shadow-lg">
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="font-medium">Lunes - Viernes</span>
@@ -181,12 +187,17 @@ const Contact = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Sábado</span>
-                    <span className="text-gray-600">10:00 AM - 4:00 PM</span>
+                    <span className="text-gray-600">9:00 AM - 9:00 PM</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-medium">Domingo</span>
-                    <span className="text-gray-600">Cerrado</span>
+                    <span className="font-medium">Domingo y Festivos</span>
+                    <span className="text-gray-600">10:00 AM - 8:00 PM</span>
                   </div>
+                </div>
+                <div className="mt-4 pt-4 border-t">
+                  <p className="text-sm text-gray-600 italic">
+                    También atendemos eventos nocturnos con previa reservación.
+                  </p>
                 </div>
               </div>
             </div>

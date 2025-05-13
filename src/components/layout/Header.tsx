@@ -36,11 +36,11 @@ const Header = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <a href="#" className="flex items-center">
-              <Sparkles className="h-6 w-6 mr-2 text-gigilove-purple" />
-              <span className="text-2xl font-bold font-poppins bg-gradient-to-r from-gigilove-orange to-gigilove-purple bg-clip-text text-transparent">
+              <Sparkles className="h-6 w-6 mr-2 text-recreacion-purple" />
+              <span className="text-2xl font-bold font-comic bg-gradient-to-r from-recreacion-orange to-recreacion-purple bg-clip-text text-transparent">
                 Recreación
               </span>
-              <span className="text-2xl font-poppins ml-1">y Magia</span>
+              <span className="text-2xl font-comic ml-1">y Magia</span>
             </a>
           </div>
 
@@ -55,7 +55,7 @@ const Header = () => {
               variant="ghost"
               size="icon"
               onClick={toggleMenu}
-              className="text-gigilove-purple hover:bg-gigilove-purple/10"
+              className="text-recreacion-purple hover:bg-recreacion-purple/10"
             >
               {isMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -106,19 +106,21 @@ const NavLinks = ({ mobile, onClick }: NavLinksProps) => {
             mobile
               ? "block py-2 text-center"
               : "inline-block"
-          } font-medium text-gray-600 hover:text-gigilove-purple transition-colors duration-200 relative group`}
+          } font-medium text-gray-600 hover:text-recreacion-purple transition-colors duration-200 relative group`}
         >
           {item.name}
-          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-gigilove-orange to-gigilove-purple transition-all duration-300 group-hover:w-full"></span>
+          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-recreacion-orange to-recreacion-purple transition-all duration-300 group-hover:w-full"></span>
         </a>
       ))}
-      <Button
-        className={`${
-          mobile ? "w-full" : ""
-        } bg-gradient-to-r from-gigilove-orange to-gigilove-purple hover:opacity-90 transition-all duration-300`}
-      >
-        ¡Reserva Ahora!
-      </Button>
+      <a href="#contact">
+        <Button
+          className={`${
+            mobile ? "w-full" : ""
+          } cloud-btn bg-recreacion-yellow text-black hover:opacity-90 transition-all duration-300 font-medium`}
+        >
+          ¡Reserva Ahora!
+        </Button>
+      </a>
     </>
   );
 };
