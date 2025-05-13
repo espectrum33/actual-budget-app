@@ -1,6 +1,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles, Users, PartyPopper, Music, Cake, Gift, Briefcase, PresentationChart } from "lucide-react";
+import { Sparkles, Users, PartyPopper, Music, Cake, Gift, Briefcase, Presentation } from "lucide-react";
 
 const Activities = () => {
   const activities = [
@@ -42,7 +42,7 @@ const Activities = () => {
     {
       title: "Eventos Corporativos",
       description: "Organizamos y animamos eventos corporativos, lanzamientos de producto y celebraciones de empresa.",
-      icon: <PresentationChart className="h-10 w-10 text-recreacion-green" />,
+      icon: <Presentation className="h-10 w-10 text-recreacion-green" />,
       color: "bg-recreacion-green/10",
       type: "empresarial"
     },
