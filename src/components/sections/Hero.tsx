@@ -1,7 +1,7 @@
 
 import { Calendar, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -9,7 +9,7 @@ const Hero = () => {
       id="hero" 
       className="relative min-h-screen flex items-center pt-16"
       style={{
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('https://images.unsplash.com/photo-1472162072942-cd5147eb3902?q=80&w=2069&auto=format&fit=crop')`,
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('https://images.unsplash.com/photo-1602631985686-1bb0e6a8696e?q=80&w=2070&auto=format&fit=crop')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
@@ -18,9 +18,9 @@ const Hero = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-white/50 to-recreacion-blue/10"></div>
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="mb-8 rounded-full bg-white p-4 shadow-lg inline-block">
+          <div className="mb-8 rounded-full bg-white p-4 shadow-lg inline-block animate-float">
             <img 
-              src="https://images.unsplash.com/photo-1633613286991-611fe299c4be?q=80&w=2070&auto=format&fit=crop" 
+              src="https://images.unsplash.com/photo-1587316495626-40d1108317f1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
               alt="Recreación y Magia" 
               className="h-24 w-24 object-cover rounded-full mx-auto"
             />
@@ -35,19 +35,21 @@ const Hero = () => {
             Creamos momentos mágicos y experiencias inolvidables para los pequeños de la casa
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#contact">
+            <Link to="/contacto">
               <Button className="cloud-btn bg-recreacion-yellow hover:bg-recreacion-yellow/90 text-black px-8 py-6 rounded-full text-lg font-medium flex items-center gap-2">
                 Reserva Tu Evento
                 <Calendar className="w-5 h-5" />
               </Button>
-            </a>
-            <Button 
-              variant="outline" 
-              className="border-2 border-recreacion-purple hover:bg-recreacion-purple/10 text-recreacion-purple px-8 py-6 rounded-full text-lg font-medium flex items-center gap-2"
-            >
-              Servicios de Magia
-              <Sparkles className="w-5 h-5" />
-            </Button>
+            </Link>
+            <Link to="/actividades">
+              <Button 
+                variant="outline" 
+                className="border-2 border-recreacion-purple hover:bg-recreacion-purple/10 text-recreacion-purple px-8 py-6 rounded-full text-lg font-medium flex items-center gap-2"
+              >
+                Servicios de Magia
+                <Sparkles className="w-5 h-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
