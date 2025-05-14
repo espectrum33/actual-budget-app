@@ -1,4 +1,3 @@
-
 import { Calendar, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -10,7 +9,7 @@ const Hero = () => {
       id="hero" 
       className="relative min-h-screen flex items-center pt-16"
       style={{
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/lovable-uploads/32ae9a08-8ead-4431-bdb3-decfd82923af.png')`,
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1545558014-8692077e9b5c?q=80&w=2069&auto=format&fit=crop')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
@@ -26,9 +25,9 @@ const Hero = () => {
             className="mb-8 rounded-full bg-white p-4 shadow-lg inline-block"
           >
             <img 
-              src="/lovable-uploads/32ae9a08-8ead-4431-bdb3-decfd82923af.png" 
+              src="https://images.unsplash.com/photo-1596464716127-f2a82984de30?q=80&w=2069&auto=format&fit=crop" 
               alt="Recreación y Magia" 
-              className="h-24 w-24 object-cover rounded-full mx-auto"
+              className="h-32 w-32 object-cover rounded-full mx-auto"
             />
           </motion.div>
           <motion.h1 
