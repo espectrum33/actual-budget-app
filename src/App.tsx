@@ -4,15 +4,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import ActivitiesPage from "./pages/ActivitiesPage";
-import AboutPage from "./pages/AboutPage";
-import EventsPage from "./pages/EventsPage";
-import TestimonialsPage from "./pages/TestimonialsPage";
-import ContactPage from "./pages/ContactPage";
-import BlogPage from "./pages/BlogPage";
-import NotFound from "./pages/NotFound";
+import MaintenancePage from "./pages/MaintenancePage";
 
+// Create a new query client
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -22,15 +16,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/actividades" element={<ActivitiesPage />} />
-          <Route path="/sobre-nosotros" element={<AboutPage />} />
-          <Route path="/eventos" element={<EventsPage />} />
-          <Route path="/testimonios" element={<TestimonialsPage />} />
-          <Route path="/contacto" element={<ContactPage />} />
-          <Route path="/blog" element={<BlogPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          {/* Show maintenance page for all routes */}
+          <Route path="*" element={<MaintenancePage />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
