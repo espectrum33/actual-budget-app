@@ -4,6 +4,15 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import Home from "./pages/Home";
+import AboutPage from "./pages/AboutPage";
+import ActivitiesPage from "./pages/ActivitiesPage";
+import EventsPage from "./pages/EventsPage";
+import TestimonialsPage from "./pages/TestimonialsPage";
+import ContactPage from "./pages/ContactPage";
+import BlogPage from "./pages/BlogPage";
+import NotFound from "./pages/NotFound";
 import MaintenancePage from "./pages/MaintenancePage";
 
 // Create a new query client
@@ -16,8 +25,16 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          {/* Show maintenance page for all routes */}
-          <Route path="*" element={<MaintenancePage />} />
+          <Route path="/" element={<Index />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/sobre-nosotros" element={<AboutPage />} />
+          <Route path="/actividades" element={<ActivitiesPage />} />
+          <Route path="/eventos" element={<EventsPage />} />
+          <Route path="/testimonios" element={<TestimonialsPage />} />
+          <Route path="/contacto" element={<ContactPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/maintenance" element={<MaintenancePage />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

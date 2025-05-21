@@ -1,18 +1,22 @@
+
 import { Calendar, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Hero = () => {
+  const isMobile = useIsMobile();
+  
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen flex items-center pt-16"
+      className="relative min-h-[90vh] flex items-center pt-16"
       style={{
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('https://images.unsplash.com/photo-1545558014-8692077e9b5c?q=80&w=2069&auto=format&fit=crop')`,
+        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('https://images.unsplash.com/photo-1545558014-8692077e9b5c?q=80&w=2069&auto=format&fit=crop')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
+        backgroundAttachment: isMobile ? 'scroll' : 'fixed'
       }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-recreacion-blue/10"></div>
@@ -27,14 +31,14 @@ const Hero = () => {
             <img 
               src="https://images.unsplash.com/photo-1596464716127-f2a82984de30?q=80&w=2069&auto=format&fit=crop" 
               alt="Recreación y Magia" 
-              className="h-32 w-32 object-cover rounded-full mx-auto"
+              className="h-24 sm:h-32 w-24 sm:w-32 object-cover rounded-full mx-auto"
             />
           </motion.div>
           <motion.h1 
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.7 }}
-            className="text-4xl md:text-6xl font-bold font-comic mb-6 drop-shadow-sm"
+            className="text-3xl sm:text-4xl md:text-6xl font-bold font-comic mb-4 sm:mb-6 drop-shadow-sm"
           >
             <span className="block text-recreacion-blue">Recreación y</span>
             <span className="bg-gradient-to-r from-recreacion-purple to-recreacion-orange bg-clip-text text-transparent">
@@ -45,7 +49,7 @@ const Hero = () => {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.7 }}
-            className="text-xl md:text-2xl mb-8 text-gray-700 font-montserrat"
+            className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 text-gray-700 font-montserrat px-2"
           >
             Creamos momentos mágicos y experiencias inolvidables para los pequeños de la casa
           </motion.p>
@@ -55,19 +59,19 @@ const Hero = () => {
             transition={{ delay: 0.6, duration: 0.7 }}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <Link to="/contacto">
-              <Button className="cloud-btn bg-recreacion-yellow hover:bg-recreacion-yellow/90 text-black px-8 py-6 rounded-full text-lg font-medium flex items-center gap-2">
-                Reserva Tu Evento
-                <Calendar className="w-5 h-5" />
+            <Link to="/contacto" className="w-full sm:w-auto">
+              <Button className="cloud-btn bg-recreacion-yellow hover:bg-recreacion-yellow/90 text-black px-8 py-6 rounded-full text-lg font-medium flex items-center gap-2 w-full sm:w-auto justify-center">
+                <span className="z-10 relative">Reserva Tu Evento</span>
+                <Calendar className="w-5 h-5 relative z-10" />
               </Button>
             </Link>
-            <Link to="/actividades">
+            <Link to="/actividades" className="w-full sm:w-auto">
               <Button 
                 variant="outline" 
-                className="border-2 border-recreacion-purple hover:bg-recreacion-purple/10 text-recreacion-purple px-8 py-6 rounded-full text-lg font-medium flex items-center gap-2"
+                className="border-2 border-recreacion-purple hover:bg-recreacion-purple/10 text-recreacion-purple px-8 py-6 rounded-full text-lg font-medium flex items-center gap-2 w-full sm:w-auto justify-center"
               >
-                Servicios de Magia
-                <Sparkles className="w-5 h-5" />
+                <span className="z-10 relative">Servicios de Magia</span>
+                <Sparkles className="w-5 h-5 relative z-10" />
               </Button>
             </Link>
           </motion.div>
