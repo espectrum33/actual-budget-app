@@ -1,7 +1,7 @@
 
 import { MessageCircle, Phone, Send, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
@@ -15,6 +15,7 @@ const WhatsAppButton = ({ phoneNumber }: WhatsAppButtonProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const isMobile = useIsMobile();
+  const buttonRef = useRef<HTMLDivElement>(null);
 
   const handleWhatsAppClick = () => {
     window.open(`https://wa.me/${phoneNumber}`, "_blank");
@@ -29,8 +30,29 @@ const WhatsAppButton = ({ phoneNumber }: WhatsAppButtonProps) => {
       setIsVisible(true);
     }, 1500);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      // Make sure to set isExpanded to false when unmounting to avoid transition issues
+      setIsExpanded(false);
+    };
   }, []);
+
+  // Handle clicks outside the component to close expanded menu
+  useEffect(() => {
+    if (!isExpanded) return;
+    
+    const handleClickOutside = (event: MouseEvent) => {
+      if (buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
+        setIsExpanded(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isExpanded]);
 
   const buttonVariants = {
     hidden: { scale: 0, opacity: 0 },
@@ -52,6 +74,13 @@ const WhatsAppButton = ({ phoneNumber }: WhatsAppButtonProps) => {
         stiffness: 400,
         damping: 10
       } 
+    },
+    exit: {
+      scale: 0,
+      opacity: 0,
+      transition: {
+        duration: 0.2
+      }
     }
   };
 
@@ -63,6 +92,13 @@ const WhatsAppButton = ({ phoneNumber }: WhatsAppButtonProps) => {
       transition: {
         duration: 0.3
       }
+    },
+    exit: {
+      width: 0,
+      opacity: 0,
+      transition: {
+        duration: 0.2
+      }
     }
   };
 
@@ -73,6 +109,14 @@ const WhatsAppButton = ({ phoneNumber }: WhatsAppButtonProps) => {
       opacity: 1,
       transition: {
         duration: 0.4,
+        ease: "easeInOut"
+      }
+    },
+    exit: {
+      height: 0,
+      opacity: 0,
+      transition: {
+        duration: 0.3,
         ease: "easeInOut"
       }
     }
@@ -92,20 +136,24 @@ const WhatsAppButton = ({ phoneNumber }: WhatsAppButtonProps) => {
 
   return (
     <motion.div
+      ref={buttonRef}
       initial="hidden"
       animate="visible"
+      exit="exit"
       variants={buttonVariants}
       className={`fixed z-50 ${
         isMobile ? "bottom-6 right-4" : "bottom-8 right-8"
       }`}
+      key="whatsapp-button"
     >
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isExpanded && (
           <motion.div 
+            key="expanded-content"
             variants={expandedVariants}
             initial="hidden"
             animate="visible"
-            exit="hidden"
+            exit="exit"
             className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-4 mb-3 border border-green-500/20 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-80"
           >
             <div className="flex justify-between items-center mb-3">
@@ -153,16 +201,23 @@ const WhatsAppButton = ({ phoneNumber }: WhatsAppButtonProps) => {
         animate={isExpanded ? {} : pulseAnimation}
         className="flex items-center shadow-lg relative group"
       >
-        <motion.div
-          variants={textVariants}
-          animate={(isHovered && !isExpanded) || isMobile ? "visible" : "hidden"}
-          className={cn(
-            "bg-white dark:bg-slate-800 text-green-600 dark:text-green-400 font-bold px-4 py-2 rounded-l-full whitespace-nowrap overflow-hidden",
-            "border-t border-l border-b border-green-500/30 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-80"
-          )}
-        >
-          Chat WhatsApp
-        </motion.div>
+        <AnimatePresence mode="wait">
+          {(isHovered && !isExpanded) || isMobile ? (
+            <motion.div
+              key="hover-text"
+              variants={textVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className={cn(
+                "bg-white dark:bg-slate-800 text-green-600 dark:text-green-400 font-bold px-4 py-2 rounded-l-full whitespace-nowrap overflow-hidden",
+                "border-t border-l border-b border-green-500/30 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-80"
+              )}
+            >
+              Chat WhatsApp
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
         
         <motion.div 
           className={cn(
@@ -179,13 +234,19 @@ const WhatsAppButton = ({ phoneNumber }: WhatsAppButtonProps) => {
             <MessageCircle className="w-6 h-6 text-white" />
           )}
           
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: isExpanded ? 0 : 1 }}
-            className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold"
-          >
-            1
-          </motion.div>
+          <AnimatePresence>
+            {!isExpanded && (
+              <motion.div
+                key="notification-badge"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold"
+              >
+                1
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
         
         {/* Glowing effect behind button */}
