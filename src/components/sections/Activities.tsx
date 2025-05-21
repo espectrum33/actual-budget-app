@@ -3,15 +3,47 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useState, useEffect } from "react";
 import { Sparkles, Users, PartyPopper, Music, Cake, Gift, Briefcase, Presentation } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+
+// Fixed and reliable images
+const ACTIVITIES_IMAGES = {
+  magic: "https://images.unsplash.com/photo-1528495612343-9ca9f4a9f67c?q=80&w=2070&auto=format&fit=crop",
+  animation: "https://images.unsplash.com/photo-1544776193-2d1f2c937f93?q=80&w=2070&auto=format&fit=crop",
+  parties: "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?q=80&w=2072&auto=format&fit=crop",
+  music: "https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=2070&auto=format&fit=crop",
+  corporate: "https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?q=80&w=2070&auto=format&fit=crop",
+  events: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=2070&auto=format&fit=crop",
+  celebrations: "https://images.unsplash.com/photo-1464349095431-e9a21285b19f?q=80&w=2036&auto=format&fit=crop",
+  workshops: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2071&auto=format&fit=crop",
+  fallback: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=2070"
+};
 
 const Activities = () => {
   const [activeTab, setActiveTab] = useState<"infantil" | "empresarial">("infantil");
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    setIsLoaded(true);
+    // Preload all images
+    const imagePromises = Object.entries(ACTIVITIES_IMAGES).map(([key, src]) => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+          setLoadedImages(prev => ({ ...prev, [key]: true }));
+          resolve();
+        };
+        img.onerror = () => {
+          console.error(`Failed to load image: ${key}`);
+          resolve();
+        };
+      });
+    });
+
+    Promise.all(imagePromises).then(() => {
+      setIsLoaded(true);
+    });
   }, []);
 
   const activities = [
@@ -24,7 +56,7 @@ const Activities = () => {
       gradientFrom: "from-recreacion-purple/5",
       gradientTo: "to-recreacion-purple/20",
       type: "infantil",
-      image: "https://images.unsplash.com/photo-1528495612343-9ca9f4a9f67c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=4800"
+      imageKey: "magic"
     },
     {
       title: "Animación Infantil",
@@ -35,7 +67,7 @@ const Activities = () => {
       gradientFrom: "from-recreacion-orange/5",
       gradientTo: "to-recreacion-orange/20",
       type: "infantil",
-      image: "https://images.unsplash.com/photo-1544776193-2d1f2c937f93?q=80&w=2070&auto=format&fit=crop"
+      imageKey: "animation"
     },
     {
       title: "Fiestas Temáticas",
@@ -46,7 +78,7 @@ const Activities = () => {
       gradientFrom: "from-recreacion-blue/5",
       gradientTo: "to-recreacion-blue/20",
       type: "infantil",
-      image: "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?q=80&w=2072&auto=format&fit=crop"
+      imageKey: "parties"
     },
     {
       title: "Música y Baile",
@@ -57,7 +89,7 @@ const Activities = () => {
       gradientFrom: "from-recreacion-pink/5",
       gradientTo: "to-recreacion-pink/20",
       type: "infantil",
-      image: "https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=2070&auto=format&fit=crop"
+      imageKey: "music"
     },
     {
       title: "Integraciones Empresariales",
@@ -68,7 +100,7 @@ const Activities = () => {
       gradientFrom: "from-recreacion-blue/5",
       gradientTo: "to-recreacion-blue/20",
       type: "empresarial",
-      image: "https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?q=80&w=2070&auto=format&fit=crop"
+      imageKey: "corporate"
     },
     {
       title: "Eventos Corporativos",
@@ -79,7 +111,7 @@ const Activities = () => {
       gradientFrom: "from-recreacion-green/5",
       gradientTo: "to-recreacion-green/20",
       type: "empresarial",
-      image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=2070&auto=format&fit=crop"
+      imageKey: "events"
     },
     {
       title: "Celebraciones Especiales",
@@ -90,7 +122,7 @@ const Activities = () => {
       gradientFrom: "from-recreacion-orange/5",
       gradientTo: "to-recreacion-orange/20",
       type: "infantil",
-      image: "https://images.unsplash.com/photo-1464349095431-e9a21285b19f?q=80&w=2036&auto=format&fit=crop"
+      imageKey: "celebrations"
     },
     {
       title: "Talleres Creativos",
@@ -101,7 +133,7 @@ const Activities = () => {
       gradientFrom: "from-recreacion-green/5",
       gradientTo: "to-recreacion-green/20",
       type: "infantil",
-      image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2071&auto=format&fit=crop"
+      imageKey: "workshops"
     },
   ];
 
@@ -143,8 +175,8 @@ const Activities = () => {
         </motion.div>
 
         <div className="flex justify-center mb-10">
-          <div className="flex p-1 bg-gray-100 rounded-full">
-            <button
+          <div className="flex p-1 bg-gray-100 rounded-full shadow-inner">
+            <motion.button
               onClick={() => setActiveTab("infantil")}
               className={cn(
                 "px-6 py-3 rounded-full font-comic text-lg transition-all duration-300",
@@ -152,6 +184,7 @@ const Activities = () => {
                   ? "bg-white text-recreacion-orange shadow-md" 
                   : "text-gray-600 hover:text-recreacion-orange"
               )}
+              whileTap={{ scale: 0.95 }}
             >
               <motion.span
                 variants={tabVariants}
@@ -161,8 +194,8 @@ const Activities = () => {
                 <Cake className="h-5 w-5" />
                 Infantiles
               </motion.span>
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               onClick={() => setActiveTab("empresarial")}
               className={cn(
                 "px-6 py-3 rounded-full font-comic text-lg transition-all duration-300",
@@ -170,6 +203,7 @@ const Activities = () => {
                   ? "bg-white text-recreacion-blue shadow-md" 
                   : "text-gray-600 hover:text-recreacion-blue"
               )}
+              whileTap={{ scale: 0.95 }}
             >
               <motion.span 
                 variants={tabVariants}
@@ -179,77 +213,129 @@ const Activities = () => {
                 <Briefcase className="h-5 w-5" />
                 Empresariales
               </motion.span>
-            </button>
+            </motion.button>
           </div>
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isLoaded ? "show" : "hidden"}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {activities
-              .filter(activity => activity.type === activeTab)
-              .map((activity, index) => (
-                <motion.div
-                  key={activity.title}
-                  variants={itemVariants}
-                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                  className="h-full"
-                >
-                  <Card 
-                    className={cn(
-                      "h-full border border-transparent hover:border-opacity-100 transition-all duration-300 overflow-hidden group rounded-3xl shadow-lg hover:shadow-xl bg-white",
-                      activity.borderColor
-                    )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate={isLoaded ? "show" : "hidden"}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {activities
+                .filter(activity => activity.type === activeTab)
+                .map((activity, index) => (
+                  <motion.div
+                    key={activity.title}
+                    variants={itemVariants}
+                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                    className="h-full"
                   >
-                    <div className="relative h-48 overflow-hidden">
-                      <AspectRatio ratio={16/9}>
-                        <img 
-                          src={activity.image} 
-                          alt={activity.title} 
-                          className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-                          onError={(e) => {
-                            e.currentTarget.src = "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=2070";
-                            console.error(`Failed to load image for ${activity.title}`);
+                    <Card 
+                      className={cn(
+                        "h-full border border-transparent hover:border-opacity-100 transition-all duration-300 overflow-hidden group rounded-3xl shadow-lg hover:shadow-xl bg-white",
+                        activity.borderColor
+                      )}
+                    >
+                      <div className="relative h-48 overflow-hidden">
+                        <AspectRatio ratio={16/9}>
+                          <img 
+                            src={ACTIVITIES_IMAGES[activity.imageKey] || ACTIVITIES_IMAGES.fallback} 
+                            alt={activity.title} 
+                            className={cn(
+                              "w-full h-full object-cover transition-all duration-700 group-hover:scale-110",
+                              loadedImages[activity.imageKey] ? "opacity-100" : "opacity-0"
+                            )}
+                            style={{ 
+                              transitionProperty: "opacity, transform",
+                              transitionDuration: "0.5s, 0.7s" 
+                            }}
+                            onLoad={() => {
+                              setLoadedImages(prev => ({ ...prev, [activity.imageKey]: true }));
+                            }}
+                            onError={() => {
+                              console.error(`Failed to load image for ${activity.title}`);
+                            }}
+                          />
+                          {!loadedImages[activity.imageKey] && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 animate-pulse">
+                              <Sparkles className="w-10 h-10 text-gray-300" />
+                            </div>
+                          )}
+                        </AspectRatio>
+                        <div className={cn(
+                          "absolute inset-0 bg-gradient-to-t opacity-70",
+                          activity.gradientFrom,
+                          activity.gradientTo
+                        )} />
+                      </div>
+                      <CardContent className="p-8 relative">
+                        <motion.div 
+                          className={cn(
+                            "absolute -top-8 left-6 rounded-2xl p-4 shadow-lg border border-white/25",
+                            activity.color
+                          )}
+                          whileHover={{ 
+                            rotate: [0, -5, 5, -5, 0],
+                            transition: { duration: 0.5 }
                           }}
-                        />
-                      </AspectRatio>
-                      <div className={cn(
-                        "absolute inset-0 bg-gradient-to-t opacity-70",
-                        activity.gradientFrom,
-                        activity.gradientTo
-                      )} />
-                    </div>
-                    <CardContent className="p-8 relative">
-                      <div className={cn(
-                        "absolute -top-8 left-6 rounded-2xl p-4 shadow-lg transform transition-transform duration-300 group-hover:scale-110 border border-white/25",
-                        activity.color
-                      )}>
-                        {activity.icon}
-                      </div>
-                      <h3 className="text-2xl font-comic mb-4 mt-4 group-hover:text-recreacion-blue transition-colors">
-                        {activity.title}
-                      </h3>
-                      <p className="text-gray-600 font-montserrat">
-                        {activity.description}
-                      </p>
-                      
-                      <div className="mt-8 flex justify-end">
-                        <button className="px-4 py-2 text-sm font-medium rounded-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 flex items-center gap-2 group-hover:border-recreacion-blue/30 transition-all">
-                          <span>Más información</span>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">
-                            <path d="m9 18 6-6-6-6"/>
-                          </svg>
-                        </button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-          </div>
-        </motion.div>
+                        >
+                          {activity.icon}
+                        </motion.div>
+                        <h3 className="text-2xl font-comic mb-4 mt-4 group-hover:text-recreacion-blue transition-colors">
+                          {activity.title}
+                        </h3>
+                        <p className="text-gray-600 font-montserrat">
+                          {activity.description}
+                        </p>
+                        
+                        <div className="mt-8 flex justify-end">
+                          <motion.button 
+                            className="px-4 py-2 text-sm font-medium rounded-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 flex items-center gap-2 group-hover:border-recreacion-blue/30 transition-all"
+                            whileHover={{ 
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                              x: 3 
+                            }}
+                          >
+                            <span>Más información</span>
+                            <motion.svg 
+                              xmlns="http://www.w3.org/2000/svg" 
+                              width="16" 
+                              height="16" 
+                              viewBox="0 0 24 24" 
+                              fill="none" 
+                              stroke="currentColor" 
+                              strokeWidth="2" 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round"
+                              animate={{ x: [0, 5, 0] }}
+                              transition={{ 
+                                duration: 1, 
+                                repeat: Infinity,
+                                repeatType: "loop",
+                                repeatDelay: 1
+                              }}
+                            >
+                              <path d="m9 18 6-6-6-6"/>
+                            </motion.svg>
+                          </motion.button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
 
         <motion.div 
           className="mt-16 text-center"
@@ -257,15 +343,52 @@ const Activities = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <div className="bg-white rounded-3xl shadow-xl p-8 max-w-4xl mx-auto border border-gray-100">
-            <h3 className="text-2xl font-comic mb-4 text-recreacion-purple">¿Necesitas un servicio personalizado?</h3>
+          <motion.div 
+            className="bg-white rounded-3xl shadow-xl p-8 max-w-4xl mx-auto border border-gray-100"
+            whileHover={{ 
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+              y: -5
+            }}
+          >
+            <motion.h3 
+              className="text-2xl font-comic mb-4 text-recreacion-purple"
+              animate={{ 
+                backgroundImage: [
+                  "linear-gradient(90deg, #BBA5FF 0%, #BBA5FF 100%)",
+                  "linear-gradient(90deg, #BBA5FF 0%, #71C9F8 50%, #BBA5FF 100%)",
+                  "linear-gradient(90deg, #BBA5FF 0%, #BBA5FF 100%)"
+                ]
+              }}
+              transition={{ duration: 3, repeat: Infinity }}
+              style={{ 
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundSize: "200% auto" 
+              }}
+            >
+              ¿Necesitas un servicio personalizado?
+            </motion.h3>
             <p className="text-gray-600 mb-6 font-montserrat">
               Contamos con un equipo de profesionales listos para crear una experiencia a la medida de tus necesidades.
             </p>
-            <a href="/contacto" className="inline-block cloud-btn px-8 py-3 rounded-full text-lg font-comic bg-gradient-to-r from-recreacion-purple via-recreacion-blue to-recreacion-green bg-size-200 bg-pos-0 hover:bg-pos-100 text-white transition-all duration-500">
+            <motion.a 
+              href="/contacto" 
+              className="inline-block cloud-btn px-8 py-3 rounded-full text-lg font-comic bg-gradient-to-r from-recreacion-purple via-recreacion-blue to-recreacion-green text-white"
+              style={{ backgroundSize: "200% auto" }}
+              whileHover={{ 
+                scale: 1.05,
+                backgroundPosition: "right center"
+              }}
+              transition={{ 
+                type: "spring",
+                stiffness: 400,
+                damping: 10
+              }}
+            >
               ¡Contáctanos ahora!
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
         </motion.div>
       </div>
     </section>
