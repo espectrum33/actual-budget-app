@@ -7,6 +7,7 @@ import Events from "@/components/sections/Events";
 import Testimonials from "@/components/sections/Testimonials";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/layout/Footer";
+import WhatsAppButton from "@/components/ui/WhatsAppButton";
 
 const Index = () => {
   return (
@@ -19,6 +20,7 @@ const Index = () => {
       <Testimonials />
       <Contact />
       <Footer />
+      <WhatsAppButton phoneNumber="3114824976" />
     </div>
   );
 };
