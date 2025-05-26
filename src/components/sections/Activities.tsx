@@ -8,15 +8,15 @@ import { cn } from "@/lib/utils";
 
 // Fixed and reliable images
 const ACTIVITIES_IMAGES = {
-  magic: "https://images.unsplash.com/photo-1528495612343-9ca9f4a9f67c?q=80&w=2070&auto=format&fit=crop",
-  animation: "https://images.unsplash.com/photo-1544776193-2d1f2c937f93?q=80&w=2070&auto=format&fit=crop",
-  parties: "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?q=80&w=2072&auto=format&fit=crop",
-  music: "https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=2070&auto=format&fit=crop",
-  corporate: "https://images.unsplash.com/photo-1590402494682-cd3fb53b1f70?q=80&w=2070&auto=format&fit=crop",
-  events: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=2070&auto=format&fit=crop",
-  celebrations: "https://images.unsplash.com/photo-1464349095431-e9a21285b19f?q=80&w=2036&auto=format&fit=crop",
-  workshops: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2071&auto=format&fit=crop",
-  fallback: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=2070"
+  magic: "/lovable-uploads/eventos-magia-infantil-1.avif",
+  animation: "/lovable-uploads/actividades-recreacion-2.avif",
+  parties: "/lovable-uploads/fiesta-infantil-3.avif",
+  music: "/lovable-uploads/actividades-recreativas-4.avif",
+  corporate: "/lovable-uploads/fiesta-tematica-5.avif",
+  events: "/lovable-uploads/13ad09_6efb3142bba1429199dd1e52b6aaaa17.avif",
+  celebrations: "/lovable-uploads/13ad09_861c2e3508be42bfa4df2b5ee1def88b.avif",
+  workshops: "/lovable-uploads/13ad09_8a164a297289401d88029134e418a87c.avif",
+  fallback: "/lovable-uploads/13ad09_995212c57adaead909ed96c686ed9100.avif"
 };
 
 const Activities = () => {

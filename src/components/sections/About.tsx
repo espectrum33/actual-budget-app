@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 
 // Fixed image URLs
 const ABOUT_IMAGES = {
-  img1: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-  img2: "https://images.unsplash.com/photo-1596464716127-f2a82984de30?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-  img3: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGNoaWxkcmVuJTIwcGxheWluZ3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=1000&q=80",
-  img4: "https://images.unsplash.com/photo-1560169897-fc0cdbdfa4d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8Y2hpbGRyZW4lMjBwYXJ0eXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=1000&q=80",
-  fallback: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=1000"
+  img1: "/lovable-uploads/eventos-magia-infantil-1.avif",
+  img2: "/lovable-uploads/actividades-recreacion-2.avif",
+  img3: "/lovable-uploads/fiesta-infantil-3.avif",
+  img4: "/lovable-uploads/13ad09_506ccb6588250eb61e68b7fb4d1d7e9b.avif",
+  fallback: "/lovable-uploads/13ad09_995212c57adaead909ed96c686ed9100.avif"
 };
 
 const About = () => {

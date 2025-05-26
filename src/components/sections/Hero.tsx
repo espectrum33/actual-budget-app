@@ -11,9 +11,10 @@ const Hero = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
   
-  // Better image fallbacks and preloading
-  const backgroundImage = "https://images.unsplash.com/photo-1596464716127-f2a82984de30?q=80&w=2069&auto=format&fit=crop";
-  const logoImage = "https://images.unsplash.com/photo-1528495612343-9ca9f4a9f67c?q=80&w=1200&auto=format&fit=crop";
+  // Imágenes de eventos y fiestas temáticas
+  const backgroundImage = "/lovable-uploads/Magia-y-recracion.avif";
+  const secondaryImage = "/lovable-uploads/fiesta-tematica-5.avif";
+  const logoImage = "/lovable-uploads/13ad09_995212c57adaead909ed96c686ed9100.avif";
   
   useEffect(() => {
     // Preload images
@@ -23,8 +24,7 @@ const Hero = () => {
     
     const logoImg = new Image();
     logoImg.src = logoImage;
-    
-    setIsLoaded(true);
+    logoImg.onload = () => setIsLoaded(true);
   }, []);
   
   const containerVariants = {
