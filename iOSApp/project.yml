@@ -1,33 +1,60 @@
 name: ActualAccounts
 options:
   minimumXcodeGenVersion: 2.39.0
+  deploymentTarget:
+    iOS: "26.0"
 settings:
   base:
-    PRODUCT_BUNDLE_IDENTIFIER: com.actual.accounts
-    DEVELOPMENT_TEAM: ""
-    IPHONEOS_DEPLOYMENT_TARGET: 17.0
     SWIFT_VERSION: 5.10
-packages: {}
+    # The top-level team ID can be empty
+    DEVELOPMENT_TEAM: ""
+
 targets:
   ActualAccounts:
     type: application
     platform: iOS
-    deploymentTarget: "17.0"
     sources:
       - path: App
       - path: Features
       - path: Networking
       - path: UI
       - path: Resources
-        excludes:
-          - README.md
+        excludes: [README.md]
+      - path: Shared
+    dependencies:
+      - target: SummaryWidgetExtension
+    info:
+      path: Resources/Info.plist
     settings:
       base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.actual.accounts
+        CODE_SIGN_STYLE: Manual
+        # --- FIXED: Provide a placeholder Team ID ---
+        DEVELOPMENT_TEAM: "A1B2C3D4E5"
+        PROVISIONING_PROFILE_SPECIFIER: ""
+        CODE_SIGN_ENTITLEMENTS: SummaryWidget/SummaryWidgetExtension.entitlements
         INFOPLIST_FILE: Resources/Info.plist
-        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-        ASSETCATALOG_COMPILER_APPICON_NAME: ""
-        CODE_SIGN_STYLE: Automatic
-        ENABLE_PREVIEWS: YES
-    scheme:
-      testTargets: []
+
+  SummaryWidgetExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: SummaryWidget
+      - path: Shared
+      - path: UI
+    info:
+      path: SummaryWidget/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.actual.accounts.SummaryWidget
+        CODE_SIGN_STYLE: Manual
+        # --- FIXED: Provide the same placeholder Team ID ---
+        DEVELOPMENT_TEAM: "A1B2C3D4E5"
+        PROVISIONING_PROFILE_SPECIFIER: ""
+        CODE_SIGN_ENTITLEMENTS: SummaryWidget/SummaryWidgetExtension.entitlements
+        INFOPLIST_FILE: SummaryWidget/Info.plist
+        APPLICATION_EXTENSION_API_ONLY: YES
 

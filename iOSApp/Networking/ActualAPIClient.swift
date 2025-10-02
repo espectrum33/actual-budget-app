@@ -101,15 +101,7 @@ final class ActualAPIClient {
         try ensureSuccess(response: response, data: data)
         return try JSONDecoder().decode(APIResponse<BudgetMonth>.self, from: data).data
     }
-
-    func fetchBudgetMonthCategories(_ month: String) async throws -> [BudgetMonthCategory] {
-        let url = APIEndpoints.monthCategories(base: baseURL, syncId: syncId, month: month)
-        let request = try buildRequest(url: url, method: "GET")
-        let (data, response) = try await session.data(for: request)
-        try ensureSuccess(response: response, data: data)
-        return try JSONDecoder().decode(BudgetMonthCategoriesResponse.self, from: data).data
-    }
-
+    
     func fetchBudgetMonthCategoryGroups(_ month: String) async throws -> [BudgetMonthCategoryGroup] {
         if isDemoMode {
             return DemoDataService.shared.generateBudgetCategoryGroups()
@@ -136,18 +128,7 @@ final class ActualAPIClient {
         let msg = try JSONDecoder().decode(GeneralResponseMessage.self, from: data)
         return msg.message
     }
-
-    func updateAccount(accountId: String, name: String?, offbudget: Bool?) async throws {
-        let url = APIEndpoints.account(base: baseURL, syncId: syncId, accountId: accountId)
-        var request = try buildRequest(url: url, method: "PATCH")
-        var account: [String: Any] = [:]
-        if let name { account["name"] = name }
-        if let offbudget { account["offbudget"] = offbudget }
-        request.httpBody = try JSONSerialization.data(withJSONObject: ["account": account])
-        let (data, response) = try await session.data(for: request)
-        try ensureSuccess(response: response, data: data)
-    }
-
+    
     func deleteAccount(accountId: String) async throws {
         let url = APIEndpoints.account(base: baseURL, syncId: syncId, accountId: accountId)
         let request = try buildRequest(url: url, method: "DELETE")
@@ -237,4 +218,3 @@ enum APIError: Error, LocalizedError {
         }
     }
 }
-

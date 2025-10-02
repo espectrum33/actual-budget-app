@@ -100,4 +100,3 @@ struct BudgetMonthCategoryGroup: Identifiable, Decodable, Equatable {
 
 struct BudgetMonthCategoriesResponse: Decodable { let data: [BudgetMonthCategory] }
 struct BudgetMonthCategoryGroupsResponse: Decodable { let data: [BudgetMonthCategoryGroup] }
-

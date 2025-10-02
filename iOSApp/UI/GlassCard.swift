@@ -11,7 +11,7 @@ struct GlassCard<Content: View>: View {
 
     var body: some View {
         content()
-            .padding(12)
+            .padding(16)
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .overlay(

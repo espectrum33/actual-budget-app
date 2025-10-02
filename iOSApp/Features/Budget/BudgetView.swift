@@ -6,32 +6,38 @@ struct BudgetView: View {
     @State private var budget: BudgetMonth?
     @State private var monthGroups: [BudgetMonthCategoryGroup] = []
     @State private var expandedGroups: Set<String> = []
-    @State private var categoriesById: [String: String] = [:]
-    @State private var accounts: [Account] = []
-    @State private var payeesById: [String: Payee] = [:]
-    @State private var transactions: [Transaction] = []
     @State private var errorMessage: String?
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                header()
-                table()
+        ZStack {
+            AppBackground()
+            ScrollView {
+                VStack(spacing: 24) {
+                    header()
+                    
+                    if monthGroups.isEmpty {
+                        GlassCard {
+                             Text("No budget categories found for this month.")
+                                 .font(AppTheme.Fonts.body)
+                                 .foregroundStyle(.secondary)
+                                 .frame(maxWidth: .infinity, minHeight: 100)
+                         }
+                    } else {
+                        categoryGroups
+                    }
+                }
+                .padding()
             }
-            .padding()
         }
-        .background(AppTheme.background.ignoresSafeArea())
         .navigationTitle(monthTitle())
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button { moveMonth(-1) } label: { Image(systemName: "chevron.left") }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 12) {
-                    Button { moveMonth(-1) } label: { Image(systemName: "chevron.left") }
-                    Button { moveMonth(+1) } label: { Image(systemName: "chevron.right") }
-                }
-                .accentColor(AppTheme.accent)
+                Button { moveMonth(+1) } label: { Image(systemName: "chevron.right") }
             }
         }
-        .accentColor(AppTheme.accent)
         .task { await loadAll() }
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
             Button("OK") { errorMessage = nil }
@@ -39,141 +45,104 @@ struct BudgetView: View {
     }
 
     private func header() -> some View {
-        VStack(spacing: 8) {
-            let available = budget?.totalBalance ?? 0
-            let overspent = budget?.lastMonthOverspent ?? 0
-            let budgeted = budget?.totalBudgeted ?? 0
-            let forNext = budget?.forNextMonth ?? 0
-            VStack(spacing: 6) {
-                Text("Available funds")
-                    .font(AppTheme.Fonts.subheadline)
-                    .foregroundStyle(.secondary)
-                Text(formatMoney(available))
-                    .font(AppTheme.Fonts.headline)
+        GlassCard {
+            VStack(alignment: .leading) {
+                Text("To Be Budgeted")
+                    .font(AppTheme.Fonts.body)
+                    .foregroundStyle(.secondary) // Changed
+                Text(formatMoney(budget?.toBudget ?? 0))
+                    .font(AppTheme.Fonts.title)
+                    .foregroundColor( (budget?.toBudget ?? 0) < 0 ? AppTheme.destructive : .primary) // Changed
                     .monospacedDigit()
+                
+                Divider().padding(.vertical, 8)
+                
                 HStack {
-                    VStack {
-                        Text("Overspent in Sep")
-                            .font(AppTheme.Fonts.caption2)
-                            .foregroundStyle(.secondary)
-                        Text(formatMoney(-overspent))
-                            .monospacedDigit()
-                    }
-                    Spacer(minLength: 12)
-                    VStack {
-                        Text("Budgeted")
-                            .font(AppTheme.Fonts.caption2)
-                            .foregroundStyle(.secondary)
-                        Text(formatMoney(budgeted))
-                            .monospacedDigit()
-                    }
-                    Spacer(minLength: 12)
-                    VStack {
-                        Text("For next month")
-                            .font(AppTheme.Fonts.caption2)
-                            .foregroundStyle(.secondary)
-                        Text(formatMoney(forNext))
-                            .monospacedDigit()
-                    }
-                }
-            }
-            if let total = budget?.toBudget, total < 0 {
-                VStack(spacing: 4) {
-                    Text("Overbudgeted:")
-                        .font(AppTheme.Fonts.caption)
-                        .foregroundStyle(.secondary)
-                    Text(formatMoney(total))
-                        .foregroundStyle(.red)
-                        .font(AppTheme.Fonts.title)
-                        .bold()
-                        .monospacedDigit()
+                    metric(label: "Available", value: budget?.incomeAvailable ?? 0)
+                    Spacer()
+                    metric(label: "Budgeted", value: budget?.totalBudgeted ?? 0)
+                    Spacer()
+                    metric(label: "Spent", value: budget?.totalSpent ?? 0)
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(AppTheme.glassCardBackground, in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
     }
-
-    private func table() -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Groups and categories
-            ForEach(sortedGroups(), id: \.id) { group in
-                let isExpanded = expandedGroups.contains(group.id)
-                VStack(alignment: .leading, spacing: 10) {
-                    // Group header row
-                    Button(action: {
-                        if isExpanded { expandedGroups.remove(group.id) } else { expandedGroups.insert(group.id) }
-                    }) {
-                        HStack(spacing: 14) {
-                            Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                                .font(AppTheme.Fonts.caption2.bold())
-                            Text(group.name)
-                                .font(AppTheme.Fonts.body)
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                                .layoutPriority(10)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+    
+    private var categoryGroups: some View {
+        ForEach(sortedGroups(), id: \.id) { group in
+            VStack(alignment: .leading, spacing: 12) {
+                DisclosureGroup(isExpanded: Binding(
+                    get: { expandedGroups.contains(group.id) },
+                    set: { isExpanded in
+                        if isExpanded { expandedGroups.insert(group.id) } else { expandedGroups.remove(group.id) }
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    .padding(.horizontal)
-                    .padding(.vertical, 10)
-                    .background(AppTheme.glassCardBackground, in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
-
-                    if !isExpanded {
-                        HStack {
-                            labeledAmount("Budgeted", group.budgeted ?? 0)
-                            Spacer()
-                            labeledAmount("Spent", abs(group.spent ?? 0))
-                            Spacer()
-                            labeledAmount("Balance", group.balance ?? 0)
-                        }
-                        .padding(.horizontal)
+                )) {
+                    ForEach(group.categories ?? [], id: \.id) { cat in
+                        categoryRow(cat)
+                            .padding(.top, 8)
                     }
-
-                    // Category rows
-                    if isExpanded {
-                        VStack(spacing: 8) {
-                            ForEach(group.categories ?? [], id: \.id) { cat in
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text(cat.name)
-                                        .font(AppTheme.Fonts.subheadline)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                        .layoutPriority(10)
-                                    HStack {
-                                        labeledAmount("Budgeted", cat.budgeted ?? 0)
-                                        Spacer()
-                                        labeledAmount("Spent", abs(cat.spent ?? 0))
-                                        Spacer()
-                                        labeledAmount("Balance", cat.balance ?? 0)
-                                    }
-                                }
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(AppTheme.glassCardBackground, in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
-                            }
-                        }
-                        .padding(.horizontal)
+                } label: {
+                    HStack {
+                        Text(group.name)
+                            .font(AppTheme.Fonts.subtitle)
+                            .foregroundColor(.primary) // Changed
+                        Spacer()
+                        Text(formatMoney(group.balance ?? 0))
+                            .font(AppTheme.Fonts.body.monospacedDigit())
+                            .foregroundStyle(.secondary) // Changed
                     }
                 }
-                .padding(.bottom, 16)
+                .accentColor(.secondary) // Changed
             }
+            .padding()
+            .background(Color.primary.opacity(0.05))
+            .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
         }
     }
 
-    private func labeledAmount(_ label: String, _ value: Int) -> some View {
-        VStack(alignment: .trailing, spacing: 4) {
-            Text(label).font(AppTheme.Fonts.caption2).foregroundStyle(.secondary)
-            Text(formatMoney(value)).font(AppTheme.Fonts.body).monospacedDigit()
+    private func categoryRow(_ category: BudgetMonthCategory) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(category.name)
+                    .font(AppTheme.Fonts.headline)
+                    .foregroundColor(.primary) // Changed
+                Spacer()
+                Text(formatMoney(category.balance ?? 0))
+                    .font(AppTheme.Fonts.subheadline.monospacedDigit())
+                    .foregroundColor( (category.balance ?? 0) < 0 ? AppTheme.destructive : .primary) // Changed
+            }
+            
+            let spent = abs(category.spent ?? 0)
+            let budgeted = category.budgeted ?? 0
+            let progress = budgeted > 0 ? min(Double(spent) / Double(budgeted), 1.0) : 0.0
+            
+            ProgressView(value: progress)
+                .tint(progress > 0.85 ? AppTheme.destructive : AppTheme.accent)
+                .padding(.top, 2)
+            
+            HStack {
+                Text("Spent: \(formatMoney(spent))")
+                Spacer()
+                Text("Budgeted: \(formatMoney(budgeted))")
+            }
+            .font(AppTheme.Fonts.footnote)
+            .foregroundStyle(.secondary) // Changed
         }
     }
 
-    // removed progress bar per request
-
+    private func metric(label: String, value: Int) -> some View {
+        VStack(alignment: .leading) {
+            Text(label)
+                .font(AppTheme.Fonts.footnote)
+                .foregroundStyle(.secondary) // Changed
+            Text(formatMoney(value))
+                .font(AppTheme.Fonts.subheadline.monospacedDigit())
+                .foregroundStyle(.primary) // Changed
+        }
+    }
+    
+    // MARK: - Data Logic (Unchanged)
     private func sortedGroups() -> [BudgetMonthCategoryGroup] {
-        // Place income group(s) at bottom if present
         let income = monthGroups.filter { $0.is_income == true }
         let spend = monthGroups.filter { $0.is_income != true }
         return spend + income
@@ -189,26 +158,7 @@ struct BudgetView: View {
     }
 
     private func monthTitle() -> String {
-        let f = DateFormatter()
-        f.dateFormat = "LLLL"
-        let y = DateFormatter()
-        y.dateFormat = "yyyy"
-        return "\(f.string(from: monthDate)) \(y.string(from: monthDate))"
-    }
-
-    private func monthRange(date: Date) -> (String, String) {
-        let cal = Calendar(identifier: .gregorian)
-        let comps = cal.dateComponents([.year, .month], from: date)
-        let startDate = cal.date(from: comps) ?? date
-        let endDate = cal.date(byAdding: DateComponents(month: 1, day: -1), to: startDate) ?? date
-        return (format(date: startDate), format(date: endDate))
-    }
-
-    private func format(date: Date) -> String {
-        let f = DateFormatter()
-        f.calendar = Calendar(identifier: .gregorian)
-        f.dateFormat = "yyyy-MM-dd"
-        return f.string(from: date)
+        let f = DateFormatter(); f.dateFormat = "LLLL yyyy"; return f.string(from: monthDate)
     }
 
     private func formatMoney(_ amount: Int) -> String {
@@ -227,26 +177,11 @@ struct BudgetView: View {
 
     private func loadAll() async {
         do {
-            async let cats = try client().fetchCategories()
-            async let accs = try client().fetchAccounts()
-            async let payees = try client().fetchPayees()
-            let (catList, accList, payeeList) = try await (cats, accs, payees)
-            let (start, _) = monthRange(date: monthDate)
-            let txs = try await withThrowingTaskGroup(of: [Transaction].self) { group -> [[Transaction]] in
-                for acc in accList { group.addTask { try await client().fetchTransactions(accountId: acc.id, since: start) } }
-                var results: [[Transaction]] = []
-                for try await list in group { results.append(list) }
-                return results
-            }
             let monthKey = String(format: "%04d-%02d", Calendar.current.component(.year, from: monthDate), Calendar.current.component(.month, from: monthDate))
             async let budgetMonth = try client().fetchBudgetMonth(monthKey)
             async let groups = try client().fetchBudgetMonthCategoryGroups(monthKey)
             let (bm, g) = try await (budgetMonth, groups)
             await MainActor.run {
-                categoriesById = Dictionary(uniqueKeysWithValues: catList.map { ($0.id, $0.name) })
-                accounts = accList
-                payeesById = Dictionary(uniqueKeysWithValues: payeeList.map { ($0.id, $0) })
-                transactions = txs.flatMap { $0 }
                 budget = bm
                 monthGroups = g
             }

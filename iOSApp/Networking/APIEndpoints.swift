@@ -33,4 +33,3 @@ enum APIEndpoints {
     static func monthCategoryGroups(base: URL, syncId: String, month: String) -> URL { base.appendingPathComponent("/budgets/\(syncId)/months/\(month)/categorygroups") }
     static func monthCategories(base: URL, syncId: String, month: String) -> URL { base.appendingPathComponent("/budgets/\(syncId)/months/\(month)/categories") }
 }
-
