@@ -12,57 +12,77 @@ struct DashboardView: View {
     var onBudgetAccounts: [Account] { accounts.filter { !$0.offbudget } }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                HStack(spacing: 16) {
-                    metricCard(title: "Spent Today", value: spentToday())
-                    metricCard(title: "Spent This Month", value: spentThisMonth())
-                }
-                HStack(spacing: 16) {
-                    metricCard(title: "Spent Last Month", value: spentLastMonth())
-                    metricCard(title: "On-budget Accounts", value: onBudgetAccounts.count, isMoney: false)
-                }
-                chartByDay()
-                chartByCategory()
+        GeometryReader { geometry in
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(spacing: 16) {
+                    HStack(spacing: 16) {
+                        metricCard(title: "Spent Today", value: spentToday())
+                        metricCard(title: "Spent This Month", value: spentThisMonth())
+                    }
+                    .frame(maxWidth: geometry.size.width - 32)
+                    HStack(spacing: 16) {
+                        metricCard(title: "Spent Last Month", value: spentLastMonth())
+                        metricCard(title: "On-budget Accounts", value: onBudgetAccounts.count, isMoney: false)
+                    }
+                    .frame(maxWidth: geometry.size.width - 32)
+                    // charts removed per request
 
-                // Recent transactions section
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("Recent Transactions").font(.headline)
-                        Spacer()
-                        NavigationLink("View All") { AllTransactionsView() }
-                    }
-                    ForEach(recentNonTransferOnBudget().prefix(5), id: \.id) { tx in
+                    // Recent transactions section
+                    VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            VStack(alignment: .leading) {
-                                Text(payeeText(tx)).font(.subheadline)
-                                Text(tx.date).font(.caption).foregroundStyle(.secondary)
-                            }
+                            Text("Recent Transactions")
+                                .font(AppTheme.Fonts.subtitle)
+                                .foregroundColor(.white)
                             Spacer()
-                            Text(formatMoney(abs(tx.amount ?? 0)))
-                                .foregroundStyle((tx.amount ?? 0) < 0 ? .red : .green)
-                                .monospacedDigit()
+                            NavigationLink("View All") { AllTransactionsView() }
+                                .accentColor(AppTheme.accent)
+                                .font(AppTheme.Fonts.subtitle)
                         }
-                        .padding(10)
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    }
-                    Button {
-                        showingAdd = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "plus.circle.fill")
-                            Text("Add Transaction")
+                        ForEach(recentNonTransferOnBudget().prefix(5), id: \.id) { tx in
+                            AppTheme.glassCard {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(payeeText(tx))
+                                            .font(AppTheme.Fonts.subtitle)
+                                            .foregroundColor(.white)
+                                        Text(tx.date)
+                                            .font(AppTheme.Fonts.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Text(formatMoney(abs(tx.amount ?? 0)))
+                                        .foregroundColor((tx.amount ?? 0) < 0 ? .red : .green)
+                                        .font(AppTheme.Fonts.subtitle.monospacedDigit())
+                                }
+                                .padding(12)
+                            }
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        Button {
+                            showingAdd = true
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Add Transaction")
+                                    .font(AppTheme.Fonts.subtitle)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                        }
+                        .accentColor(AppTheme.accent)
+                        .buttonStyle(.plain)
+                        .background {
+                            AppTheme.glassCard {}
+                        }
                     }
+                    .padding(.top, 8)
                 }
+                .padding(16)
+                .padding(.bottom, 100) // Add bottom padding to account for tab bar
             }
-            .padding()
         }
-        .background(LiquidBackground())
+        .background(AppTheme.background.ignoresSafeArea())
         .navigationTitle("Dashboard")
+        .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) { EmptyView() }
         }
@@ -113,14 +133,18 @@ struct DashboardView: View {
     }
 
     private func metricCard(title: String, value: Int, isMoney: Bool = true) -> some View {
-        VStack(alignment: .leading) {
-            Text(title).font(.headline)
-            Text(isMoney ? formatMoney(value) : String(value))
-                .font(.title2.bold())
+        AppTheme.glassCard {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(AppTheme.Fonts.subtitle)
+                    .foregroundColor(.white.opacity(0.8))
+                Text(isMoney ? formatMoney(value) : String(value))
+                    .font(AppTheme.Fonts.title.bold())
+                    .foregroundColor(.white)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(16)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
     private func spentToday() -> Int {
@@ -163,21 +187,26 @@ struct DashboardView: View {
         let buckets = Dictionary(grouping: transactions.filter { $0.date >= start && $0.date <= end && ( $0.amount ?? 0) < 0 && onBudgetIds.contains($0.account) && !isTransfer($0) }, by: { $0.date })
             .mapValues { -$0.compactMap { $0.amount }.reduce(0, +) }
         let days = sortedDatesBetween(start: start, end: end)
-        return VStack(alignment: .leading, spacing: 8) {
-            Text("This Month Spend (Daily)").font(.headline)
-            HStack(alignment: .bottom, spacing: 4) {
-                let maxVal = max(1, buckets.values.max() ?? 1)
-                ForEach(days, id: \.self) { d in
-                    let v = buckets[d] ?? 0
-                    Rectangle()
-                        .fill(Color.red.opacity(0.7))
-                        .frame(width: 8, height: CGFloat(v) / CGFloat(maxVal) * 120.0)
-                        .overlay(Text(String(d.suffix(2))).font(.system(size: 8)).foregroundStyle(.secondary), alignment: .bottom)
+        return AppTheme.glassCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("This Month Spend (Daily)")
+                    .font(AppTheme.Fonts.subtitle)
+                    .foregroundColor(.white)
+                HStack(alignment: .bottom, spacing: 6) {
+                    let maxVal = max(1, buckets.values.max() ?? 1)
+                    ForEach(days, id: \.self) { d in
+                        let v = buckets[d] ?? 0
+                        Rectangle()
+                            .fill(Color.red.opacity(0.8))
+                            .frame(width: 8, height: CGFloat(v) / CGFloat(maxVal) * 120.0)
+                            .overlay(Text(String(d.suffix(2)))
+                                .font(AppTheme.Fonts.caption)
+                                .foregroundStyle(.secondary), alignment: .bottom)
+                    }
                 }
+                .frame(height: 140)
             }
-            .frame(height: 140)
-            .padding(.vertical, 8)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .padding(16)
         }
     }
 
@@ -187,18 +216,26 @@ struct DashboardView: View {
         let catBuckets = Dictionary(grouping: transactions.filter { $0.date >= start && $0.date <= end && ( $0.amount ?? 0) < 0 && onBudgetIds.contains($0.account) && !isTransfer($0) }, by: { $0.category ?? "" })
             .mapValues { -$0.compactMap { $0.amount }.reduce(0, +) }
         let sortedCats = catBuckets.sorted { $0.value > $1.value }.prefix(6)
-        return VStack(alignment: .leading, spacing: 8) {
-            Text("Top Categories (This Month)").font(.headline)
-            ForEach(Array(sortedCats), id: \.key) { key, value in
-                HStack {
-                    Text(categoriesById[key] ?? "Uncategorized").lineLimit(1)
-                    Spacer()
-                    Text(formatMoney(value)).monospacedDigit()
+        return AppTheme.glassCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Top Categories (This Month)")
+                    .font(AppTheme.Fonts.subtitle)
+                    .foregroundColor(.white)
+                ForEach(Array(sortedCats), id: \.key) { key, value in
+                    HStack {
+                        Text(categoriesById[key] ?? "Uncategorized")
+                            .lineLimit(1)
+                            .font(AppTheme.Fonts.subtitle)
+                            .foregroundColor(.white)
+                        Spacer()
+                        Text(formatMoney(value))
+                            .font(AppTheme.Fonts.subtitle.monospacedDigit())
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 4)
                 }
-                .padding(.horizontal)
             }
-            .padding(.vertical, 8)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .padding(16)
         }
     }
 

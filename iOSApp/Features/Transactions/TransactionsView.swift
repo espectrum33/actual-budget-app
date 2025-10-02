@@ -18,44 +18,44 @@ struct TransactionsView: View {
     var body: some View {
         List {
             ForEach(Array(sortedTransactions.enumerated()), id: \.offset) { _, tx in
-                HStack(alignment: .firstTextBaseline) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(payeeText(tx))
-                            .font(.headline)
-                        HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: 6) {
+                    // Payee visible
+                    Text(payeeText(tx))
+                        .font(AppTheme.Fonts.headline)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+
+                    HStack(alignment: .firstTextBaseline, spacing: 10) {
+                        // Left: current account name + category on same line
+                        Text(account.name)
+                            .font(AppTheme.Fonts.footnote)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                        let cat = categoryName(tx.category)
+                        if let cat, !cat.isEmpty {
+                            Text("•").foregroundStyle(.secondary)
+                            Text(cat)
+                                .font(AppTheme.Fonts.footnote)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
+                        Spacer(minLength: 8)
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text(formattedSignedAmount(tx.amount))
+                                .font(AppTheme.Fonts.subheadline)
+                                .monospacedDigit()
+                                .foregroundStyle((tx.amount ?? 0) < 0 ? .red : .green)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                             Text(formattedDate(tx.date))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            if let cat = categoryName(tx.category) {
-                                Text(cat)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Color.secondary.opacity(0.1), in: Capsule())
-                            }
-                            if isTransfer(tx) {
-                                Text("Transfer")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Color.blue.opacity(0.1), in: Capsule())
-                            }
-                        }
-                        if let notes = tx.notes, !notes.isEmpty {
-                            Text(notes)
-                                .font(.footnote)
+                                .font(AppTheme.Fonts.caption)
                                 .foregroundStyle(.secondary)
                         }
-                    }
-                    Spacer()
-                    Text(formattedSignedAmount(tx.amount))
-                        .font(.headline)
-                        .monospacedDigit()
-                        .foregroundStyle((tx.amount ?? 0) < 0 ? .red : .green)
                         .frame(minWidth: 90, alignment: .trailing)
+                    }
                 }
+                .padding(.vertical, 10)
+                .padding(.horizontal, 14)
                 .contentShape(Rectangle())
                 .onTapGesture { startEdit(tx) }
                 .contextMenu {
@@ -69,16 +69,30 @@ struct TransactionsView: View {
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button(role: .destructive) { Task { await delete(tx) } } label: { Label("Delete", systemImage: "trash") }
                 }
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             }
         }
-        .background(LiquidBackground())
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.background.ignoresSafeArea())
         .navigationTitle(account.name)
-        .toolbarTitleDisplayMode(.inline)
+        .toolbarBackground(AppTheme.background, for: .navigationBar)
+        .toolbarColorScheme(.light, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button { startNew() } label: { Image(systemName: "plus") }
+                Button {
+                    startNew()
+                } label: {
+                    Image(systemName: "plus.circle")
+                        .foregroundColor(AppTheme.accent)
+                        .font(.system(size: 20, weight: .semibold))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Add Transaction")
             }
         }
+        .tint(AppTheme.accent)
         .task { await loadAll() }
         .refreshable { await loadAll() }
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
@@ -96,6 +110,7 @@ struct TransactionsView: View {
                 transaction: editingTransaction,
                 onSave: { tx in Task { await save(tx) } }
             )
+            .background(AppTheme.background.ignoresSafeArea())
         }
     }
 
@@ -262,14 +277,25 @@ struct TransactionEditorView: View {
                 if showAccountPicker {
                     Section("Account") {
                         Picker("Account", selection: $selectedAccountId) {
-                            ForEach(accounts, id: \.id) { acc in
-                                Text(acc.name).tag(acc.id)
+                            let grouped = accounts.sorted { lhs, rhs in
+                                if lhs.offbudget == rhs.offbudget {
+                                    return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+                                }
+                                return lhs.offbudget == false && rhs.offbudget == true
+                            }
+                            ForEach(grouped, id: \.id) { acc in
+                                Text(acc.name + (acc.offbudget ? " (Off)" : ""))
+                                    .tag(acc.id)
                             }
                         }
+                        .listRowBackground(AppTheme.glassCardBackgroundView)
+                        .pickerStyle(.menu)
                     }
+                    .listRowBackground(AppTheme.glassCardBackgroundView)
                 }
                 Section("Details") {
                     DatePicker("Date", selection: $date, displayedComponents: [.date])
+                        .listRowBackground(AppTheme.glassCardBackgroundView)
                     HStack(spacing: 12) {
                         TextField("Amount", text: Binding(
                             get: { amountString },
@@ -283,30 +309,40 @@ struct TransactionEditorView: View {
                             }
                         ))
                         .keyboardType(.decimalPad)
+                        .font(AppTheme.Fonts.body)
+                        .padding(10)
                         .frame(maxWidth: .infinity)
-                        HStack(spacing: 8) {
-                            Button(action: { isNegative = true }) {
+                        // Standalone glass circle over parent, with +/- text underneath
+                        ZStack(alignment: .leading) {
+                            HStack(spacing: 24) {
                                 Text("−")
                                     .font(.system(size: 24, weight: .bold))
-                                    .frame(width: 48, height: 48)
-                                    .background(isNegative ? Color.red.opacity(0.25) : Color.clear)
-                                    .clipShape(Circle())
-                            }
-                            .buttonStyle(.plain)
-                            Button(action: { isNegative = false }) {
+                                    .frame(width: 24)
+                                    .onTapGesture { withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { isNegative = true } }
                                 Text("+")
                                     .font(.system(size: 24, weight: .bold))
-                                    .frame(width: 48, height: 48)
-                                    .background(!isNegative ? Color.green.opacity(0.25) : Color.clear)
-                                    .clipShape(Circle())
+                                    .frame(width: 24)
+                                    .onTapGesture { withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { isNegative = false } }
                             }
-                            .buttonStyle(.plain)
+                            .frame(height: 44)
+
+                            Circle()
+                                .frame(width: 40, height: 40)
+                                .background(.ultraThinMaterial, in: Circle())
+                                .overlay(Circle().stroke(Color.white.opacity(0.12), lineWidth: 1))
+                                .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+                                .offset(x: isNegative ? 0 : 48, y: 0)
+                                .animation(.spring(response: 0.35, dampingFraction: 0.8), value: isNegative)
+                                .onTapGesture { withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { isNegative.toggle() } }
                         }
                     }
+                    .padding(.vertical, 6)
                     Picker("Payee input", selection: $payeeModeIsPicker) {
                         Text("Choose from list").tag(true)
                         Text("Type custom name").tag(false)
                     }
+                    .pickerStyle(.segmented)
+                    .listRowBackground(AppTheme.glassCardBackgroundView)
                     if payeeModeIsPicker {
                         Picker("Payee", selection: $selectedPayeeId) {
                             Text("None").tag("")
@@ -314,10 +350,16 @@ struct TransactionEditorView: View {
                                 Text(payee.name).tag(payee.id)
                             }
                         }
+                        .listRowBackground(AppTheme.glassCardBackgroundView)
+                        .pickerStyle(.menu)
                     } else {
                         TextField("Payee name", text: $customPayee)
+                            .font(AppTheme.Fonts.body)
+                            .padding(10)
                     }
                     TextField("Notes", text: $notes)
+                        .font(AppTheme.Fonts.body)
+                        .padding(10)
                     Picker("Category", selection: Binding(
                         get: { categoryId ?? "" },
                         set: { categoryId = $0.isEmpty ? nil : $0 }
@@ -327,15 +369,31 @@ struct TransactionEditorView: View {
                             Text(pair.value).tag(pair.key)
                         }
                     }
+                        .listRowBackground(AppTheme.glassCardBackgroundView)
+                    .pickerStyle(.menu)
                 }
+                .listRowBackground(AppTheme.glassCardBackgroundView)
             }
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.background.ignoresSafeArea())
             .navigationTitle(transaction?.id == nil ? "New Transaction" : "Edit Transaction")
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                    .foregroundColor(AppTheme.accent)
+                    .font(AppTheme.Fonts.body)
+                }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { onSave(buildTransaction()) }
+                    Button("Save") {
+                        onSave(buildTransaction())
+                    }
+                    .foregroundColor(AppTheme.accent)
+                    .font(AppTheme.Fonts.body.bold())
                 }
             }
+            .tint(AppTheme.accent)
             .onAppear {
                 if let t = transaction {
                     date = parseDate(t.date) ?? Date()
@@ -412,7 +470,11 @@ struct TransactionQuickAddSheet: View {
     var body: some View {
         NavigationStack {
             if accounts.isEmpty {
-                ProgressView().task { await load() }
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: AppTheme.accent))
+                    .task { await load() }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(AppTheme.background.ignoresSafeArea())
             } else {
                 TransactionEditorView(
                     initialAccountId: accounts.first?.id,
@@ -423,8 +485,10 @@ struct TransactionQuickAddSheet: View {
                     transaction: nil,
                     onSave: { tx in Task { await save(tx) } }
                 )
+                .background(AppTheme.background.ignoresSafeArea())
             }
         }
+        .tint(AppTheme.accent)
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
             Button("OK") { errorMessage = nil }
         } message: { Text(errorMessage ?? "") }

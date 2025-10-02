@@ -8,50 +8,59 @@ struct OnboardingView: View {
     @State private var password: String = ""
 
     var body: some View {
-        ZStack {
-            LiquidBackground()
-            VStack(spacing: 20) {
-                Text("Connect to Actual Server")
-                    .font(.largeTitle.bold())
-                    .multilineTextAlignment(.center)
-                Group {
-                    TextField("Base URL (e.g. https://example.com/v1)", text: $baseURL)
-                        .textContentType(.URL)
-                        .keyboardType(.URL)
-                        .autocapitalization(.none)
-                        .textInputAutocapitalization(.never)
-                        .disableAutocorrection(true)
-                    TextField("API Key", text: $apiKey)
-                        .textContentType(.password)
-                        .autocapitalization(.none)
-                        .textInputAutocapitalization(.never)
-                        .disableAutocorrection(true)
-                    TextField("Sync ID", text: $syncId)
-                        .autocapitalization(.none)
-                        .textInputAutocapitalization(.never)
-                        .disableAutocorrection(true)
-                    SecureField("Budget Encryption Password (optional)", text: $password)
+        AppTheme.background
+            .ignoresSafeArea()
+            .overlay {
+                VStack(spacing: 24) {
+                    Text("Connect to Actual Server")
+                        .font(AppTheme.Fonts.title)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 24)
+                    Group {
+                        TextField("Base URL (e.g. https://example.com/v1)", text: $baseURL)
+                            .textContentType(.URL)
+                            .keyboardType(.URL)
+                            .autocapitalization(.none)
+                            .textInputAutocapitalization(.never)
+                            .disableAutocorrection(true)
+                        TextField("API Key", text: $apiKey)
+                            .textContentType(.password)
+                            .autocapitalization(.none)
+                            .textInputAutocapitalization(.never)
+                            .disableAutocorrection(true)
+                        TextField("Sync ID", text: $syncId)
+                            .autocapitalization(.none)
+                            .textInputAutocapitalization(.never)
+                            .disableAutocorrection(true)
+                        SecureField("Budget Encryption Password (optional)", text: $password)
+                    }
+                    .font(AppTheme.Fonts.body)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.horizontal, 24)
+                    Button(action: save) {
+                        Text("Continue")
+                            .font(AppTheme.Fonts.body)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(AppTheme.accent)
+                            .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+                            .foregroundColor(.white)
+                    }
+                    .disabled(!isValid)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 24)
                 }
-                .textFieldStyle(.roundedBorder)
-                .padding(.horizontal)
-                Button(action: save) {
-                    Text("Continue")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                }
-                .disabled(!isValid)
-                .padding(.horizontal)
+                .background(AppTheme.glassCardBackground)
+                .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+                .padding(.horizontal, 24)
+                .padding(.vertical, 48)
             }
-            .padding()
-        }
-        .onAppear {
-            baseURL = appState.baseURLString
-            apiKey = appState.apiKey
-            syncId = appState.syncId
-            password = appState.budgetEncryptionPassword
-        }
+            .onAppear {
+                baseURL = appState.baseURLString
+                apiKey = appState.apiKey
+                syncId = appState.syncId
+                password = appState.budgetEncryptionPassword
+            }
     }
 
     private var isValid: Bool { !baseURL.isEmpty && !apiKey.isEmpty && !syncId.isEmpty }
@@ -63,4 +72,3 @@ struct OnboardingView: View {
         appState.budgetEncryptionPassword = password
     }
 }
-

@@ -10,64 +10,75 @@ struct AccountsView: View {
     @State private var balancesById: [String: Int] = [:]
 
     private var onBudget: [Account] {
-        let list = accounts.filter { !$0.offbudget }
+        let list = accounts.filter { !$0.offbudget }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
         guard !search.isEmpty else { return list }
         return list.filter { $0.name.localizedCaseInsensitiveContains(search) }
     }
 
     private var offBudget: [Account] {
-        let list = accounts.filter { $0.offbudget }
+        let list = accounts.filter { $0.offbudget }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
         guard !search.isEmpty else { return list }
         return list.filter { $0.name.localizedCaseInsensitiveContains(search) }
     }
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                LiquidBackground()
-                List {
-                    if !onBudget.isEmpty {
-                        Section("On budget") {
-                            ForEach(onBudget) { account in
-                                NavigationLink(destination: TransactionsView(account: account)) {
-                                    row(for: account)
-                                }
-                                .contextMenu { contextMenu(for: account) }
-                            }
-                        }
+            List {
+                if !accounts.isEmpty {
+                    HStack {
+                        Text("All accounts:")
+                            .font(AppTheme.Fonts.subheadline)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text(formattedAmount(accounts.map { balancesById[$0.id] ?? 0 }.reduce(0, +)))
+                            .font(AppTheme.Fonts.subheadline)
+                            .monospacedDigit()
                     }
-                    if !offBudget.isEmpty {
-                        Section("Off budget") {
-                            ForEach(offBudget) { account in
-                                NavigationLink(destination: TransactionsView(account: account)) {
-                                    row(for: account)
-                                }
-                                .contextMenu { contextMenu(for: account) }
+                    .listRowBackground(AppTheme.background)
+                }
+                if !onBudget.isEmpty {
+                    Section(header: sectionHeader(title: "On budget", accounts: onBudget)) {
+                        ForEach(onBudget) { account in
+                            NavigationLink(destination: TransactionsView(account: account)) {
+                                row(for: account)
                             }
+                            .contextMenu { contextMenu(for: account) }
                         }
                     }
                 }
-                .searchable(text: $search)
-                .refreshable { await hardReload() }
-                .overlay(alignment: .bottomTrailing) {
-                    Button { showingCreate = true } label: {
-                        Image(systemName: "plus")
-                            .font(.title2.bold())
-                            .padding()
-                            .background(.ultraThinMaterial, in: Circle())
+                if !offBudget.isEmpty {
+                    Section(header: sectionHeader(title: "Off budget", accounts: offBudget)) {
+                        ForEach(offBudget) { account in
+                            NavigationLink(destination: TransactionsView(account: account)) {
+                                row(for: account)
+                            }
+                            .contextMenu { contextMenu(for: account) }
+                        }
                     }
-                    .padding()
                 }
             }
+            .searchable(text: $search)
+            .refreshable { await hardReload() }
+            .background(AppTheme.background.ignoresSafeArea())
+            // removed floating add button; add action moved to toolbar menu
             .navigationTitle("Accounts")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: SettingsView()) {
-                        Image(systemName: "gearshape")
+                    Menu {
+                        Button { showingCreate = true } label: {
+                            Label("Add Account", systemImage: "plus")
+                        }
+                        NavigationLink(destination: SettingsView()) {
+                            Label("Settings", systemImage: "gearshape")
+                        }
+                    } label: {
+                        Image(systemName: "line.3.horizontal")
                     }
+                    .tint(AppTheme.accent)
                 }
             }
         }
+        .accentColor(AppTheme.accent)
         .onAppear { Task { await softReload() } }
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
             Button("OK") { errorMessage = nil }
@@ -82,21 +93,38 @@ struct AccountsView: View {
         }
     }
 
+    private func sectionHeader(title: String, accounts: [Account]) -> some View {
+        let total = accounts.map { balancesById[$0.id] ?? 0 }.reduce(0, +)
+        return HStack {
+            Text(title)
+                .font(AppTheme.Fonts.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(formattedAmount(total))
+                .font(AppTheme.Fonts.subheadline)
+                .monospacedDigit()
+        }
+        .padding(.vertical, 6)
+    }
+
     private func row(for account: Account) -> some View {
         HStack {
             VStack(alignment: .leading) {
                 Text(account.name)
-                    .font(.headline)
+                    .font(AppTheme.Fonts.headline)
                 Text(account.offbudget ? "Off-budget" : "On-budget")
-                    .font(.caption)
+                    .font(AppTheme.Fonts.caption)
                     .foregroundStyle(.secondary)
             }
             Spacer()
             Text(formattedAmount(balancesById[account.id]))
-                .font(.headline)
+                .font(AppTheme.Fonts.headline)
                 .monospacedDigit()
                 .foregroundStyle(.primary)
         }
+        .padding(.vertical, 8)
+        .padding(.horizontal)
+        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
         .task { await loadBalanceIfNeeded(account) }
     }
 
@@ -217,7 +245,6 @@ private struct CreateAccountSheet: View {
                 }
             }
         }
+        .accentColor(AppTheme.accent)
     }
 }
-
-

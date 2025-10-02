@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03F843B8E3D444EE084CC5E8 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081A570C2B4C33B669059561 /* AppTheme.swift */; };
 		0C6E029C22692D98FA8DFDF6 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23D6324A9DE550D93D33E3D /* APIModels.swift */; };
 		254C49ACE4F7164650879D09 /* ActualAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9517988C2D34778CE15AB79 /* ActualAPIClient.swift */; };
 		3BCD8E59CC7585D0C9766B97 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305638D1FCBEEF057C11E2B9 /* AppState.swift */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		02F88A209CDF35AE3A25271C /* DemoDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoDataService.swift; sourceTree = "<group>"; };
+		081A570C2B4C33B669059561 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		14BF70E767114BBB7E245F72 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		191BCF4D8FA37E6AD771B3C8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1FE7305732C35F8E4C1C6B5D /* APIEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoints.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 			children = (
 				A2AF889A0B071948999BD82E /* ActualAccountsApp.swift */,
 				305638D1FCBEEF057C11E2B9 /* AppState.swift */,
+				081A570C2B4C33B669059561 /* AppTheme.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 				57C87B4D2C70DD4FA2787654 /* ActualAccountsApp.swift in Sources */,
 				E815F42DCD39FC3F1A387F6C /* AllTransactionsView.swift in Sources */,
 				3BCD8E59CC7585D0C9766B97 /* AppState.swift in Sources */,
+				03F843B8E3D444EE084CC5E8 /* AppTheme.swift in Sources */,
 				E12B83D2DF6E26EEC3E2164E /* BudgetView.swift in Sources */,
 				A176BC1489CC4C76DB9E845D /* CurrencyFormatter.swift in Sources */,
 				3FA813807321D4379DE9FF57 /* DashboardView.swift in Sources */,

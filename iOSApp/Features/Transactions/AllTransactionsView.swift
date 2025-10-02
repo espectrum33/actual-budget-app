@@ -44,36 +44,64 @@ struct AllTransactionsView: View {
         List {
             listHeader
                 .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-            curvedSeparator
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
+                .listRowBackground(AppTheme.background)
             filtersBar
                 .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-            Section(header: Text("Recent transactions").font(.headline).textCase(nil)) {
+                .listRowBackground(AppTheme.background)
+            Section(header: Text("Recent transactions")
+                .font(AppTheme.Fonts.headline)
+                .textCase(nil)
+                .foregroundColor(AppTheme.accent)
+            ) {
                 ForEach(Array(listTransactions.enumerated()), id: \.offset) { _, tx in
-                    HStack(alignment: .firstTextBaseline) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(payeeText(tx)).font(.headline)
-                            HStack(spacing: 8) {
-                                Text(tx.date).font(.caption).foregroundStyle(.secondary)
-                                if let cat = categoriesById[tx.category ?? ""] { Text(cat).font(.caption).foregroundStyle(.secondary) }
-                                if let acc = accounts.first(where: { $0.id == tx.account })?.name {
-                                    Text(acc).font(.caption).foregroundStyle(.secondary)
-                                }
+                    VStack(alignment: .leading, spacing: 6) {
+                        // Payee visible
+                        Text(payeeText(tx))
+                            .font(AppTheme.Fonts.headline)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+
+                        HStack(alignment: .firstTextBaseline, spacing: 10) {
+                            // Left: account + category on same line
+                            if let acc = accounts.first(where: { $0.id == tx.account })?.name {
+                                Text(acc)
+                                    .font(AppTheme.Fonts.footnote)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
                             }
+                            let cat = categoriesById[tx.category ?? ""]
+                            if let cat, !cat.isEmpty {
+                                Text("•")
+                                    .foregroundStyle(.secondary)
+                                Text(cat)
+                                    .font(AppTheme.Fonts.footnote)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                            }
+                            Spacer(minLength: 8)
+                            // Right: amount with date below, avoid wrapping amount
+                            VStack(alignment: .trailing, spacing: 2) {
+                                Text(formattedSignedAmount(tx.amount))
+                                    .font(AppTheme.Fonts.subheadline)
+                                    .monospacedDigit()
+                                    .foregroundColor((tx.amount ?? 0) < 0 ? .red : .green)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.8)
+                                Text(tx.date)
+                                    .font(AppTheme.Fonts.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(minWidth: 90, alignment: .trailing)
                         }
-                        Spacer()
-                        Text(formattedSignedAmount(tx.amount))
-                            .font(.headline)
-                            .monospacedDigit()
-                            .foregroundStyle((tx.amount ?? 0) < 0 ? .red : .green)
                     }
+                    .padding(.vertical, 6)
+                    .padding(.horizontal)
+                    .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
                 }
             }
+            .listRowBackground(AppTheme.background)
         }
-        .background(LiquidBackground())
+        .background(AppTheme.background.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
@@ -81,65 +109,60 @@ struct AllTransactionsView: View {
             Button("OK") { errorMessage = nil }
         } message: {
             Text(errorMessage ?? "")
+                .font(AppTheme.Fonts.subheadline)
         }
         .sheet(isPresented: $showingAdd) {
             TransactionQuickAddSheet()
+                .background(AppTheme.background.ignoresSafeArea())
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    showingAdd = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.title3.bold())
+                        .foregroundColor(AppTheme.accent)
+                }
+                .accessibilityLabel("Add Transaction")
+            }
         }
     }
 
     private var listHeader: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: 10) {
+        AppTheme.glassCard {
+            VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Balance").foregroundStyle(.secondary)
-                        Text(formatMoney(onBudgetBalance)).font(.title.bold()).monospacedDigit()
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Balance")
+                            .font(AppTheme.Fonts.subheadline)
+                            .foregroundStyle(.secondary)
+                        Text(formatMoney(onBudgetBalance))
+                            .font(AppTheme.Fonts.title.bold())
+                            .monospacedDigit()
                     }
                     Spacer()
-                    Button { showingAdd = true } label: {
-                        Image(systemName: "plus")
-                            .font(.title3.bold())
-                            .frame(width: 44, height: 44)
-                            .background(AppTheme.accentSoft, in: Circle())
-                    }
                 }
-                areaChart.frame(height: 120)
+                areaChart
+                    .frame(height: 120)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
+            .padding(.horizontal)
+            .padding(.vertical, 16)
         }
         .padding(.horizontal)
         .padding(.top)
     }
 
-    private var curvedSeparator: some View {
-        GeometryReader { geo in
-            let w = geo.size.width
-            let h: CGFloat = 26
-            Path { p in
-                p.move(to: CGPoint(x: 0, y: 0))
-                p.addLine(to: CGPoint(x: 0, y: h/2))
-                p.addQuadCurve(to: CGPoint(x: w, y: h/2), control: CGPoint(x: w/2, y: h))
-                p.addLine(to: CGPoint(x: w, y: 0))
-                p.closeSubpath()
-            }
-            .fill(.ultraThinMaterial)
-            .overlay(
-                Path { p in
-                    p.move(to: CGPoint(x: 0, y: h/2))
-                    p.addQuadCurve(to: CGPoint(x: w, y: h/2), control: CGPoint(x: w/2, y: h))
-                }
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
-            )
-        }
-        .frame(height: 26)
-        .padding(.horizontal)
-        .padding(.bottom, 6)
-    }
+    // removed curvedSeparator per design simplification
 
     private var filtersBar: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 10) {
             HStack(spacing: 12) {
                 Toggle(isOn: $onBudgetOnly) {
                     Text("On-budget only")
+                        .font(AppTheme.Fonts.subheadline)
+                        .foregroundColor(AppTheme.accent)
                 }
                 .toggleStyle(SwitchToggleStyle(tint: AppTheme.accent))
             }
@@ -153,17 +176,19 @@ struct AllTransactionsView: View {
             }
             HStack {
                 Text("Last \(filterValue) \(filterGranularity.rawValue)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(AppTheme.Fonts.subheadline)
+                    .foregroundColor(AppTheme.accent.opacity(0.7))
                 Spacer()
                 Stepper("", value: $filterValue, in: 1...365)
                     .labelsHidden()
+                    .tint(AppTheme.accent)
             }
         }
         .padding()
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(AppTheme.glassCardBackground)
+        .cornerRadius(16)
         .padding(.horizontal)
-        .padding(.bottom, 8)
+        .padding(.bottom, 12)
     }
 
     private func isTransferToOnBudget(_ tx: Transaction) -> Bool {
@@ -189,7 +214,12 @@ struct AllTransactionsView: View {
             let pts = smoothPoints(series: series, size: geo.size)
             ZStack(alignment: .bottomLeading) {
                 curvedFillPath(points: pts, width: w, height: h)
-                    .fill(LinearGradient(colors: [AppTheme.accent.opacity(0.25), .clear], startPoint: .top, endPoint: .bottom))
+                    .fill(
+                        LinearGradient(
+                            colors: [AppTheme.accent.opacity(0.25), AppTheme.background.opacity(0)],
+                            startPoint: .top,
+                            endPoint: .bottom)
+                    )
                 curvedStrokePath(points: pts)
                     .stroke(AppTheme.accent, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
             }

@@ -20,7 +20,7 @@ struct BudgetView: View {
             }
             .padding()
         }
-        .background(LiquidBackground())
+        .background(AppTheme.background.ignoresSafeArea())
         .navigationTitle(monthTitle())
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -28,8 +28,10 @@ struct BudgetView: View {
                     Button { moveMonth(-1) } label: { Image(systemName: "chevron.left") }
                     Button { moveMonth(+1) } label: { Image(systemName: "chevron.right") }
                 }
+                .accentColor(AppTheme.accent)
             }
         }
+        .accentColor(AppTheme.accent)
         .task { await loadAll() }
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
             Button("OK") { errorMessage = nil }
@@ -43,42 +45,71 @@ struct BudgetView: View {
             let budgeted = budget?.totalBudgeted ?? 0
             let forNext = budget?.forNextMonth ?? 0
             VStack(spacing: 6) {
-                Text("Available funds").font(.caption).foregroundStyle(.secondary)
-                Text(formatMoney(available)).font(.title3.bold()).monospacedDigit()
+                Text("Available funds")
+                    .font(AppTheme.Fonts.subheadline)
+                    .foregroundStyle(.secondary)
+                Text(formatMoney(available))
+                    .font(AppTheme.Fonts.headline)
+                    .monospacedDigit()
                 HStack {
-                    VStack { Text("Overspent in Sep").font(.caption).foregroundStyle(.secondary); Text(formatMoney(-overspent)).monospacedDigit() }
+                    VStack {
+                        Text("Overspent in Sep")
+                            .font(AppTheme.Fonts.caption2)
+                            .foregroundStyle(.secondary)
+                        Text(formatMoney(-overspent))
+                            .monospacedDigit()
+                    }
                     Spacer(minLength: 12)
-                    VStack { Text("Budgeted").font(.caption).foregroundStyle(.secondary); Text(formatMoney(budgeted)).monospacedDigit() }
+                    VStack {
+                        Text("Budgeted")
+                            .font(AppTheme.Fonts.caption2)
+                            .foregroundStyle(.secondary)
+                        Text(formatMoney(budgeted))
+                            .monospacedDigit()
+                    }
                     Spacer(minLength: 12)
-                    VStack { Text("For next month").font(.caption).foregroundStyle(.secondary); Text(formatMoney(forNext)).monospacedDigit() }
+                    VStack {
+                        Text("For next month")
+                            .font(AppTheme.Fonts.caption2)
+                            .foregroundStyle(.secondary)
+                        Text(formatMoney(forNext))
+                            .monospacedDigit()
+                    }
                 }
             }
             if let total = budget?.toBudget, total < 0 {
                 VStack(spacing: 4) {
-                    Text("Overbudgeted:").font(.caption).foregroundStyle(.secondary)
-                    Text(formatMoney(total)).foregroundStyle(.red).font(.title2.bold()).monospacedDigit()
+                    Text("Overbudgeted:")
+                        .font(AppTheme.Fonts.caption)
+                        .foregroundStyle(.secondary)
+                    Text(formatMoney(total))
+                        .foregroundStyle(.red)
+                        .font(AppTheme.Fonts.title)
+                        .bold()
+                        .monospacedDigit()
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(AppTheme.glassCardBackground, in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
     }
 
     private func table() -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
             // Groups and categories
             ForEach(sortedGroups(), id: \.id) { group in
                 let isExpanded = expandedGroups.contains(group.id)
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 10) {
                     // Group header row
                     Button(action: {
                         if isExpanded { expandedGroups.remove(group.id) } else { expandedGroups.insert(group.id) }
                     }) {
-                        HStack(spacing: 12) {
-                            Image(systemName: isExpanded ? "chevron.down" : "chevron.right").font(.caption.bold())
+                        HStack(spacing: 14) {
+                            Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                                .font(AppTheme.Fonts.caption2.bold())
                             Text(group.name)
-                                .font(.headline)
+                                .font(AppTheme.Fonts.body)
                                 .lineLimit(1)
                                 .truncationMode(.tail)
                                 .layoutPriority(10)
@@ -87,8 +118,8 @@ struct BudgetView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                     .padding(.horizontal)
-                    .padding(.vertical, 8)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .padding(.vertical, 10)
+                    .background(AppTheme.glassCardBackground, in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
 
                     if !isExpanded {
                         HStack {
@@ -103,11 +134,11 @@ struct BudgetView: View {
 
                     // Category rows
                     if isExpanded {
-                        VStack(spacing: 6) {
+                        VStack(spacing: 8) {
                             ForEach(group.categories ?? [], id: \.id) { cat in
-                                VStack(alignment: .leading, spacing: 6) {
+                                VStack(alignment: .leading, spacing: 8) {
                                     Text(cat.name)
-                                        .font(.subheadline)
+                                        .font(AppTheme.Fonts.subheadline)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
                                         .layoutPriority(10)
@@ -120,21 +151,22 @@ struct BudgetView: View {
                                     }
                                 }
                                 .padding(.horizontal)
-                                .padding(.vertical, 8)
-                                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .padding(.vertical, 10)
+                                .background(AppTheme.glassCardBackground, in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
                             }
                         }
+                        .padding(.horizontal)
                     }
                 }
-                .padding(.bottom, 12)
+                .padding(.bottom, 16)
             }
         }
     }
 
     private func labeledAmount(_ label: String, _ value: Int) -> some View {
-        VStack(alignment: .trailing, spacing: 2) {
-            Text(label).font(.caption2).foregroundStyle(.secondary)
-            Text(formatMoney(value)).monospacedDigit()
+        VStack(alignment: .trailing, spacing: 4) {
+            Text(label).font(AppTheme.Fonts.caption2).foregroundStyle(.secondary)
+            Text(formatMoney(value)).font(AppTheme.Fonts.body).monospacedDigit()
         }
     }
 
@@ -147,10 +179,21 @@ struct BudgetView: View {
         return spend + income
     }
 
-    private func moveMonth(_ delta: Int) { monthDate = Calendar(identifier: .gregorian).date(byAdding: .month, value: delta, to: monthDate) ?? monthDate; Task { await loadAll() } }
+    private func moveMonth(_ delta: Int) {
+        monthDate = Calendar(identifier: .gregorian).date(
+            byAdding: .month,
+            value: delta,
+            to: monthDate
+        ) ?? monthDate
+        Task { await loadAll() }
+    }
 
     private func monthTitle() -> String {
-        let f = DateFormatter(); f.dateFormat = "LLLL"; let y = DateFormatter(); y.dateFormat = "yyyy"; return "\(f.string(from: monthDate)) \(y.string(from: monthDate))"
+        let f = DateFormatter()
+        f.dateFormat = "LLLL"
+        let y = DateFormatter()
+        y.dateFormat = "yyyy"
+        return "\(f.string(from: monthDate)) \(y.string(from: monthDate))"
     }
 
     private func monthRange(date: Date) -> (String, String) {
@@ -161,10 +204,15 @@ struct BudgetView: View {
         return (format(date: startDate), format(date: endDate))
     }
 
-    private func format(date: Date) -> String { let f = DateFormatter(); f.calendar = Calendar(identifier: .gregorian); f.dateFormat = "yyyy-MM-dd"; return f.string(from: date) }
+    private func format(date: Date) -> String {
+        let f = DateFormatter()
+        f.calendar = Calendar(identifier: .gregorian)
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: date)
+    }
 
-    private func formatMoney(_ amount: Int) -> String { 
-        return CurrencyFormatter.shared.format(amount, currencyCode: appState.currencyCode) 
+    private func formatMoney(_ amount: Int) -> String {
+        return CurrencyFormatter.shared.format(amount, currencyCode: appState.currencyCode)
     }
 
     private func client() throws -> ActualAPIClient {
@@ -207,5 +255,3 @@ struct BudgetView: View {
         }
     }
 }
-
-

@@ -21,10 +21,13 @@ struct RootView: View {
                         .tabItem { Label("Budget", systemImage: "chart.pie") }
                         .tag(3)
                 }
+                .accentColor(AppTheme.accent)
+                .background(AppTheme.background.ignoresSafeArea())
             } else {
                 OnboardingView()
+                    .background(AppTheme.background.ignoresSafeArea())
             }
         }
+        .preferredColorScheme(.dark)
     }
 }
-
