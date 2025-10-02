@@ -88,9 +88,11 @@ struct TransactionsView: View {
         }
         .sheet(isPresented: $showingEditor) {
             TransactionEditorView(
-                accountId: account.id,
+                initialAccountId: account.id,
                 categoriesById: categoriesById,
                 payees: Array(payeesById.values).sorted { $0.name < $1.name },
+                accounts: [],
+                showAccountPicker: false,
                 transaction: editingTransaction,
                 onSave: { tx in Task { await save(tx) } }
             )
@@ -102,7 +104,8 @@ struct TransactionsView: View {
             baseURLString: appState.baseURLString,
             apiKey: appState.apiKey,
             syncId: appState.syncId,
-            budgetEncryptionPassword: appState.budgetEncryptionPassword
+            budgetEncryptionPassword: appState.budgetEncryptionPassword,
+            isDemoMode: appState.isDemoMode
         )
     }
 
@@ -234,33 +237,52 @@ struct TransactionsView: View {
 }
 
 struct TransactionEditorView: View {
-    let accountId: String
+    let initialAccountId: String?
     let categoriesById: [String: String]
     let payees: [Payee]
+    var accounts: [Account] = []
+    var showAccountPicker: Bool = false
     var transaction: Transaction?
     var onSave: (Transaction) -> Void
 
     @Environment(\.dismiss) private var dismiss
     @State private var date: Date = Date()
-    @State private var amountUnits: String = "0" // integer only minor units
+    @State private var amountString: String = "0.00" // decimal display
     @State private var isNegative: Bool = true // default '-'
     @State private var payeeModeIsPicker: Bool = true
     @State private var selectedPayeeId: String = ""
     @State private var customPayee: String = ""
     @State private var notes: String = ""
     @State private var categoryId: String?
+    @State private var selectedAccountId: String = ""
 
     var body: some View {
         NavigationStack {
             Form {
+                if showAccountPicker {
+                    Section("Account") {
+                        Picker("Account", selection: $selectedAccountId) {
+                            ForEach(accounts, id: \.id) { acc in
+                                Text(acc.name).tag(acc.id)
+                            }
+                        }
+                    }
+                }
                 Section("Details") {
                     DatePicker("Date", selection: $date, displayedComponents: [.date])
                     HStack(spacing: 12) {
-                        TextField("Amount (integer)", text: Binding(
-                            get: { amountUnits },
-                            set: { newVal in amountUnits = newVal.filter { $0.isNumber } }
+                        TextField("Amount", text: Binding(
+                            get: { amountString },
+                            set: { newVal in 
+                                // Allow only numbers and one decimal point
+                                let filtered = newVal.filter { $0.isNumber || $0 == "." }
+                                let parts = filtered.split(separator: ".")
+                                if parts.count <= 2 && (parts.last?.count ?? 0) <= 2 {
+                                    amountString = filtered
+                                }
+                            }
                         ))
-                        .keyboardType(.numberPad)
+                        .keyboardType(.decimalPad)
                         .frame(maxWidth: .infinity)
                         HStack(spacing: 8) {
                             Button(action: { isNegative = true }) {
@@ -317,14 +339,16 @@ struct TransactionEditorView: View {
             .onAppear {
                 if let t = transaction {
                     date = parseDate(t.date) ?? Date()
-                    amountUnits = String(abs(t.amount ?? 0))
+                    amountString = formatAmountForDisplay(abs(t.amount ?? 0))
                     isNegative = (t.amount ?? 0) < 0
                     if let payeeId = t.payee { selectedPayeeId = payeeId; payeeModeIsPicker = true } else { payeeModeIsPicker = false; customPayee = t.payee_name ?? "" }
                     notes = t.notes ?? ""
                     categoryId = t.category
                 } else {
                     isNegative = true
+                    amountString = "0.00"
                 }
+                selectedAccountId = (initialAccountId ?? selectedAccountId).isEmpty ? (accounts.first?.id ?? "") : (initialAccountId ?? "")
             }
         }
     }
@@ -332,11 +356,11 @@ struct TransactionEditorView: View {
     private func buildTransaction() -> Transaction {
         let payeeId: String? = payeeModeIsPicker ? (selectedPayeeId.isEmpty ? nil : selectedPayeeId) : nil
         let payeeName: String? = payeeModeIsPicker ? nil : (customPayee.isEmpty ? nil : customPayee)
-        let units = Int(amountUnits) ?? 0
+        let units = parseAmountFromDisplay(amountString)
         let signed = isNegative ? -abs(units) : abs(units)
         return Transaction(
             id: transaction?.id,
-            account: accountId,
+            account: selectedAccountId.isEmpty ? (initialAccountId ?? "") : selectedAccountId,
             date: formatDate(date),
             amount: signed,
             payee: payeeId,
@@ -356,5 +380,88 @@ struct TransactionEditorView: View {
     }
     private func formatDate(_ date: Date) -> String {
         let f = DateFormatter(); f.calendar = Calendar(identifier: .gregorian); f.dateFormat = "yyyy-MM-dd"; return f.string(from: date)
+    }
+
+    private func formatAmountForDisplay(_ amount: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: NSNumber(value: Double(amount) / 100.0)) ?? "0.00"
+    }
+
+    private func parseAmountFromDisplay(_ display: String) -> Int {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        if let number = formatter.number(from: display) {
+            return Int(number.doubleValue * 100)
+        }
+        return 0
+    }
+}
+
+struct TransactionQuickAddSheet: View {
+    @EnvironmentObject private var appState: AppState
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var accounts: [Account] = []
+    @State private var categoriesById: [String: String] = [:]
+    @State private var payees: [Payee] = []
+    @State private var errorMessage: String?
+
+    var body: some View {
+        NavigationStack {
+            if accounts.isEmpty {
+                ProgressView().task { await load() }
+            } else {
+                TransactionEditorView(
+                    initialAccountId: accounts.first?.id,
+                    categoriesById: categoriesById,
+                    payees: payees,
+                    accounts: accounts,
+                    showAccountPicker: true,
+                    transaction: nil,
+                    onSave: { tx in Task { await save(tx) } }
+                )
+            }
+        }
+        .alert("Error", isPresented: .constant(errorMessage != nil)) {
+            Button("OK") { errorMessage = nil }
+        } message: { Text(errorMessage ?? "") }
+    }
+
+    private func client() throws -> ActualAPIClient {
+        try ActualAPIClient(
+            baseURLString: appState.baseURLString,
+            apiKey: appState.apiKey,
+            syncId: appState.syncId,
+            budgetEncryptionPassword: appState.budgetEncryptionPassword,
+            isDemoMode: appState.isDemoMode
+        )
+    }
+
+    private func load() async {
+        do {
+            async let accs = try client().fetchAccounts()
+            async let cats = try client().fetchCategories()
+            async let pays = try client().fetchPayees()
+            let (a, c, p) = try await (accs, cats, pays)
+            await MainActor.run {
+                accounts = a
+                categoriesById = Dictionary(uniqueKeysWithValues: c.map { ($0.id, $0.name) })
+                payees = p.sorted { $0.name < $1.name }
+            }
+        } catch {
+            await MainActor.run { errorMessage = error.localizedDescription }
+        }
+    }
+
+    private func save(_ tx: Transaction) async {
+        do {
+            try await client().createTransaction(accountId: tx.account, transaction: tx)
+            await MainActor.run { dismiss() }
+        } catch {
+            await MainActor.run { errorMessage = error.localizedDescription }
+        }
     }
 }

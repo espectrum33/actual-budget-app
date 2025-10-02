@@ -17,8 +17,8 @@ struct RootView: View {
                     NavigationStack { AllTransactionsView() }
                         .tabItem { Label("Transactions", systemImage: "list.bullet.rectangle") }
                         .tag(2)
-                    NavigationStack { SettingsView() }
-                        .tabItem { Label("Settings", systemImage: "gearshape") }
+                    NavigationStack { BudgetView() }
+                        .tabItem { Label("Budget", systemImage: "chart.pie") }
                         .tag(3)
                 }
             } else {

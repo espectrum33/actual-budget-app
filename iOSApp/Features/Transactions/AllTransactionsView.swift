@@ -13,8 +13,6 @@ struct AllTransactionsView: View {
     @State private var filterGranularity: Granularity = .day
     @State private var filterValue: Int = 30
     @State private var showingAdd: Bool = false
-    @State private var addSelectedAccountId: String = ""
-    @State private var addStageIsEditor: Bool = false
 
     enum Granularity: String, CaseIterable { case day = "Days", week = "Weeks", month = "Months", year = "Years" }
 
@@ -31,7 +29,10 @@ struct AllTransactionsView: View {
     }
 
     private var listTransactions: [Transaction] {
-        filteredTransactions.filter { !isTransferToOnBudget($0) }
+        let since = sinceDateString()
+        return filteredTransactions
+            .filter { $0.date >= since }
+            .filter { !isTransferToOnBudget($0) }
     }
 
     var onBudgetBalance: Int {
@@ -45,6 +46,9 @@ struct AllTransactionsView: View {
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             curvedSeparator
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+            filtersBar
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             Section(header: Text("Recent transactions").font(.headline).textCase(nil)) {
@@ -78,7 +82,9 @@ struct AllTransactionsView: View {
         } message: {
             Text(errorMessage ?? "")
         }
-        .sheet(isPresented: $showingAdd, onDismiss: { addStageIsEditor = false }) { quickAddSheet }
+        .sheet(isPresented: $showingAdd) {
+            TransactionQuickAddSheet()
+        }
     }
 
     private var listHeader: some View {
@@ -127,6 +133,37 @@ struct AllTransactionsView: View {
         .frame(height: 26)
         .padding(.horizontal)
         .padding(.bottom, 6)
+    }
+
+    private var filtersBar: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: 12) {
+                Toggle(isOn: $onBudgetOnly) {
+                    Text("On-budget only")
+                }
+                .toggleStyle(SwitchToggleStyle(tint: AppTheme.accent))
+            }
+            HStack(spacing: 12) {
+                Picker("Range", selection: $filterGranularity) {
+                    ForEach(Granularity.allCases, id: \.self) { g in
+                        Text(g.rawValue).tag(g)
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
+            HStack {
+                Text("Last \(filterValue) \(filterGranularity.rawValue)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Stepper("", value: $filterValue, in: 1...365)
+                    .labelsHidden()
+            }
+        }
+        .padding()
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .padding(.horizontal)
+        .padding(.bottom, 8)
     }
 
     private func isTransferToOnBudget(_ tx: Transaction) -> Bool {
@@ -207,7 +244,8 @@ struct AllTransactionsView: View {
             baseURLString: appState.baseURLString,
             apiKey: appState.apiKey,
             syncId: appState.syncId,
-            budgetEncryptionPassword: appState.budgetEncryptionPassword
+            budgetEncryptionPassword: appState.budgetEncryptionPassword,
+            isDemoMode: appState.isDemoMode
         )
     }
 
@@ -279,9 +317,7 @@ struct AllTransactionsView: View {
 
     private func formattedSignedAmount(_ amount: Int?) -> String {
         let a = amount ?? 0
-        let f = NumberFormatter(); f.numberStyle = .currency
-        let s = f.string(from: NSNumber(value: Double(abs(a))/100.0)) ?? String(a)
-        return a < 0 ? "-\(s)" : "+\(s)"
+        return CurrencyFormatter.shared.formatSigned(a, currencyCode: appState.currencyCode)
     }
 
     private func payeeText(_ tx: Transaction) -> String {
@@ -291,56 +327,7 @@ struct AllTransactionsView: View {
     }
 
     private func formatMoney(_ value: Int) -> String {
-        let f = NumberFormatter(); f.numberStyle = .currency
-        return f.string(from: NSNumber(value: Double(value)/100.0)) ?? String(value)
+        return CurrencyFormatter.shared.format(value, currencyCode: appState.currencyCode)
     }
 
-    // MARK: - Quick Add
-    private var quickAddSheet: some View {
-        NavigationStack {
-            if addStageIsEditor, let acc = accounts.first(where: { $0.id == (addSelectedAccountId.isEmpty ? (accounts.first?.id ?? "") : addSelectedAccountId) }) {
-                TransactionEditorView(
-                    accountId: acc.id,
-                    categoriesById: categoriesById,
-                    payees: Array(payeesById.values).sorted { $0.name < $1.name },
-                    transaction: nil,
-                    onSave: { tx in Task { await saveNew(tx) } }
-                )
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) { Button("Back") { addStageIsEditor = false } }
-                }
-            } else {
-                Form {
-                    Section("Account") {
-                        Picker("Account", selection: $addSelectedAccountId) {
-                            ForEach(accounts, id: \.id) { acc in
-                                Text(acc.name).tag(acc.id)
-                            }
-                        }
-                    }
-                }
-                .navigationTitle("Add Transaction")
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Next") { addStageIsEditor = true }
-                    }
-                    ToolbarItem(placement: .cancellationAction) { Button("Cancel") { showingAdd = false } }
-                }
-            }
-        }
-    }
-
-    private func saveNew(_ tx: Transaction) async {
-        do {
-            try await client().createTransaction(accountId: tx.account, transaction: tx)
-            await load()
-            await MainActor.run {
-                showingAdd = false
-                addStageIsEditor = false
-            }
-        } catch {
-            await MainActor.run { errorMessage = error.localizedDescription }
-        }
-    }
 }

@@ -39,7 +39,9 @@ struct DashboardView: View {
                                 Text(tx.date).font(.caption).foregroundStyle(.secondary)
                             }
                             Spacer()
-                            Text(formatMoney(abs(tx.amount ?? 0))).foregroundStyle(.red).monospacedDigit()
+                            Text(formatMoney(abs(tx.amount ?? 0)))
+                                .foregroundStyle((tx.amount ?? 0) < 0 ? .red : .green)
+                                .monospacedDigit()
                         }
                         .padding(10)
                         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -61,6 +63,9 @@ struct DashboardView: View {
         }
         .background(LiquidBackground())
         .navigationTitle("Dashboard")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) { EmptyView() }
+        }
         .task { await load() }
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
             Button("OK") { errorMessage = nil }
@@ -68,10 +73,8 @@ struct DashboardView: View {
             Text(errorMessage ?? "")
         }
         .sheet(isPresented: $showingAdd) {
-            // Quick add uses the first on-budget account by default
-            if let firstAcc = onBudgetAccounts.first {
-                TransactionsView(account: firstAcc)
-            }
+            // New transaction editor with account picker
+            TransactionQuickAddSheet()
         }
     }
 
@@ -80,7 +83,8 @@ struct DashboardView: View {
             baseURLString: appState.baseURLString,
             apiKey: appState.apiKey,
             syncId: appState.syncId,
-            budgetEncryptionPassword: appState.budgetEncryptionPassword
+            budgetEncryptionPassword: appState.budgetEncryptionPassword,
+            isDemoMode: appState.isDemoMode
         )
     }
 
@@ -234,8 +238,7 @@ struct DashboardView: View {
     }
 
     private func formatMoney(_ amount: Int) -> String {
-        let f = NumberFormatter(); f.numberStyle = .currency
-        return f.string(from: NSNumber(value: Double(amount)/100.0)) ?? String(amount)
+        return CurrencyFormatter.shared.format(amount, currencyCode: appState.currencyCode)
     }
 
     private func payeeText(_ tx: Transaction) -> String {

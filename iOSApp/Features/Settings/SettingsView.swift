@@ -27,6 +27,24 @@ struct SettingsView: View {
                 SecureField("Budget Encryption Password (optional)", text: $password)
             }
 
+            Section("Currency") {
+                Picker("Currency", selection: $appState.currencyCode) {
+                    ForEach(CurrencyFormatter.supportedCurrencies, id: \.0) { code, name in
+                        Text("\(code) - \(name)").tag(code)
+                    }
+                }
+            }
+
+            Section("Demo Mode") {
+                Toggle("Enable Demo Mode", isOn: $appState.isDemoMode)
+                    .toggleStyle(SwitchToggleStyle(tint: .blue))
+                if appState.isDemoMode {
+                    Text("Demo mode shows random sample data for testing the app interface.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
             Section {
                 Button(role: .destructive) {
                     appState.resetConfiguration()

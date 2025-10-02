@@ -75,3 +75,29 @@ struct BudgetMonth: Decodable {
     let totalBalance: Int
 }
 
+struct BudgetMonthCategory: Identifiable, Decodable, Equatable {
+    let id: String
+    let name: String
+    let is_income: Bool?
+    let hidden: Bool?
+    let group_id: String?
+    let budgeted: Int?
+    let spent: Int?
+    let balance: Int?
+    let carryover: Bool?
+}
+
+struct BudgetMonthCategoryGroup: Identifiable, Decodable, Equatable {
+    let id: String
+    let name: String
+    let is_income: Bool?
+    let hidden: Bool?
+    let categories: [BudgetMonthCategory]?
+    let budgeted: Int?
+    let spent: Int?
+    let balance: Int?
+}
+
+struct BudgetMonthCategoriesResponse: Decodable { let data: [BudgetMonthCategory] }
+struct BudgetMonthCategoryGroupsResponse: Decodable { let data: [BudgetMonthCategoryGroup] }
+

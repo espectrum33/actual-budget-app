@@ -6,18 +6,23 @@ final class ActualAPIClient {
     private let apiKey: String
     private let syncId: String
     private let budgetEncryptionPassword: String?
+    private let isDemoMode: Bool
 
-    init(baseURLString: String, apiKey: String, syncId: String, budgetEncryptionPassword: String?) throws {
+    init(baseURLString: String, apiKey: String, syncId: String, budgetEncryptionPassword: String?, isDemoMode: Bool = false) throws {
         self.session = URLSession(configuration: .default)
         self.baseURL = try APIEndpoints.baseURL(from: baseURLString)
         self.apiKey = apiKey
         self.syncId = syncId
         self.budgetEncryptionPassword = budgetEncryptionPassword?.isEmpty == true ? nil : budgetEncryptionPassword
+        self.isDemoMode = isDemoMode
     }
 
     // MARK: - Public API
 
     func fetchAccounts() async throws -> [Account] {
+        if isDemoMode {
+            return DemoDataService.shared.generateAccounts()
+        }
         let url = APIEndpoints.accounts(base: baseURL, syncId: syncId)
         let request = try buildRequest(url: url, method: "GET")
         let (data, response) = try await session.data(for: request)
@@ -26,6 +31,9 @@ final class ActualAPIClient {
     }
 
     func fetchCategories() async throws -> [Category] {
+        if isDemoMode {
+            return DemoDataService.shared.generateCategories()
+        }
         let url = APIEndpoints.categories(base: baseURL, syncId: syncId)
         let request = try buildRequest(url: url, method: "GET")
         let (data, response) = try await session.data(for: request)
@@ -34,6 +42,9 @@ final class ActualAPIClient {
     }
 
     func fetchPayees() async throws -> [Payee] {
+        if isDemoMode {
+            return DemoDataService.shared.generatePayees()
+        }
         let url = APIEndpoints.payees(base: baseURL, syncId: syncId)
         let request = try buildRequest(url: url, method: "GET")
         let (data, response) = try await session.data(for: request)
@@ -42,6 +53,9 @@ final class ActualAPIClient {
     }
 
     func fetchTransactions(accountId: String, since: String? = nil, until: String? = nil, page: Int? = nil, limit: Int? = nil) async throws -> [Transaction] {
+        if isDemoMode {
+            return DemoDataService.shared.generateTransactions(for: accountId, since: since ?? "2024-01-01")
+        }
         let comps = APIEndpoints.accountTransactions(base: baseURL, syncId: syncId, accountId: accountId, since: since, until: until, page: page, limit: limit)
         let request = try buildRequest(url: try requireURL(comps), method: "GET")
         let (data, response) = try await session.data(for: request)
@@ -78,11 +92,33 @@ final class ActualAPIClient {
     }
 
     func fetchBudgetMonth(_ month: String) async throws -> BudgetMonth {
+        if isDemoMode {
+            return DemoDataService.shared.generateBudgetMonth()
+        }
         let url = APIEndpoints.month(base: baseURL, syncId: syncId, month: month)
         let request = try buildRequest(url: url, method: "GET")
         let (data, response) = try await session.data(for: request)
         try ensureSuccess(response: response, data: data)
         return try JSONDecoder().decode(APIResponse<BudgetMonth>.self, from: data).data
+    }
+
+    func fetchBudgetMonthCategories(_ month: String) async throws -> [BudgetMonthCategory] {
+        let url = APIEndpoints.monthCategories(base: baseURL, syncId: syncId, month: month)
+        let request = try buildRequest(url: url, method: "GET")
+        let (data, response) = try await session.data(for: request)
+        try ensureSuccess(response: response, data: data)
+        return try JSONDecoder().decode(BudgetMonthCategoriesResponse.self, from: data).data
+    }
+
+    func fetchBudgetMonthCategoryGroups(_ month: String) async throws -> [BudgetMonthCategoryGroup] {
+        if isDemoMode {
+            return DemoDataService.shared.generateBudgetCategoryGroups()
+        }
+        let url = APIEndpoints.monthCategoryGroups(base: baseURL, syncId: syncId, month: month)
+        let request = try buildRequest(url: url, method: "GET")
+        let (data, response) = try await session.data(for: request)
+        try ensureSuccess(response: response, data: data)
+        return try JSONDecoder().decode(BudgetMonthCategoryGroupsResponse.self, from: data).data
     }
 
     func createAccount(name: String, offbudget: Bool) async throws -> String {

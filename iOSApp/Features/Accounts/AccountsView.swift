@@ -66,11 +66,6 @@ struct AccountsView: View {
                         Image(systemName: "gearshape")
                     }
                 }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    NavigationLink(destination: DashboardView()) {
-                        Image(systemName: "gauge" )
-                    }
-                }
             }
         }
         .onAppear { Task { await softReload() } }
@@ -117,7 +112,8 @@ struct AccountsView: View {
             baseURLString: appState.baseURLString,
             apiKey: appState.apiKey,
             syncId: appState.syncId,
-            budgetEncryptionPassword: appState.budgetEncryptionPassword
+            budgetEncryptionPassword: appState.budgetEncryptionPassword,
+            isDemoMode: appState.isDemoMode
         )
     }
 
@@ -162,10 +158,7 @@ struct AccountsView: View {
     }
 
     private func formattedAmount(_ amount: Int?) -> String {
-        let value = Double(amount ?? 0) / 100.0
-        let f = NumberFormatter()
-        f.numberStyle = .currency
-        return f.string(from: NSNumber(value: value)) ?? String(value)
+        return CurrencyFormatter.shared.format(amount ?? 0, currencyCode: appState.currencyCode)
     }
 
     private func createAccount(name: String, offbudget: Bool) async {
