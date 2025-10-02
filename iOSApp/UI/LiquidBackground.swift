@@ -1,33 +1,20 @@
 import SwiftUI
 
-struct LiquidBackground: View {
-    @State private var animate = false
+struct AppTheme {
+    static let gradientTop = Color(red: 0.06, green: 0.12, blue: 0.20)
+    static let gradientBottom = Color(red: 0.02, green: 0.05, blue: 0.10)
+    static let accent = Color.cyan
+    static let accentSoft = Color.cyan.opacity(0.25)
+}
 
+struct LiquidBackground: View {
     var body: some View {
-        ZStack {
-            LinearGradient(colors: [.blue.opacity(0.25), .purple.opacity(0.25)], startPoint: .topLeading, endPoint: .bottomTrailing)
-                .ignoresSafeArea()
-            Circle()
-                .fill(.blue.gradient)
-                .frame(width: 420, height: 420)
-                .blur(radius: 80)
-                .offset(x: animate ? -140 : -40, y: animate ? -200 : -120)
-                .opacity(0.8)
-            Circle()
-                .fill(.pink.gradient)
-                .frame(width: 360, height: 360)
-                .blur(radius: 80)
-                .offset(x: animate ? 120 : 40, y: animate ? 180 : 120)
-                .opacity(0.7)
-            Circle()
-                .fill(.mint.gradient)
-                .frame(width: 300, height: 300)
-                .blur(radius: 80)
-                .offset(x: animate ? -60 : -20, y: animate ? 220 : 160)
-                .opacity(0.6)
-        }
-        .animation(.easeInOut(duration: 8).repeatForever(autoreverses: true), value: animate)
-        .onAppear { animate = true }
+        LinearGradient(
+            colors: [AppTheme.gradientTop, AppTheme.gradientBottom],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+        .ignoresSafeArea()
     }
 }
 

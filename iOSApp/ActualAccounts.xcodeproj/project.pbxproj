@@ -10,6 +10,7 @@
 		0C6E029C22692D98FA8DFDF6 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23D6324A9DE550D93D33E3D /* APIModels.swift */; };
 		254C49ACE4F7164650879D09 /* ActualAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9517988C2D34778CE15AB79 /* ActualAPIClient.swift */; };
 		3BCD8E59CC7585D0C9766B97 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305638D1FCBEEF057C11E2B9 /* AppState.swift */; };
+		3FA813807321D4379DE9FF57 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EFB3A1FA3B5165207B475D /* DashboardView.swift */; };
 		57C87B4D2C70DD4FA2787654 /* ActualAccountsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2AF889A0B071948999BD82E /* ActualAccountsApp.swift */; };
 		811CA95F04F9A6C8E7EDAE72 /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0D950B8FEC34803E6C6A69 /* AccountsView.swift */; };
 		9CB64FF534D5F54FCF28646C /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14BF70E767114BBB7E245F72 /* RootView.swift */; };
@@ -18,6 +19,9 @@
 		B21F63AE54A2EE4D82B62082 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD23F8E4BDA540EC1EBEC868 /* OnboardingView.swift */; };
 		D8379BA06D631EB7E686C059 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 191BCF4D8FA37E6AD771B3C8 /* SettingsView.swift */; };
 		DC8E4AFDCA849EFD8B8F7FD1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E3A151661FD4F9F25C0710B /* Assets.xcassets */; };
+		E815F42DCD39FC3F1A387F6C /* AllTransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B968D5C0B649D4E6B776BEE /* AllTransactionsView.swift */; };
+		EB79752CE933E87B143C309F /* GlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6091912D625A221C013631 /* GlassCard.swift */; };
+		FC1C5B7A9BC8A36B4A87F5BE /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDAD07D429FBAED546E3BAA1 /* TransactionsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,13 +29,17 @@
 		191BCF4D8FA37E6AD771B3C8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1FE7305732C35F8E4C1C6B5D /* APIEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoints.swift; sourceTree = "<group>"; };
 		305638D1FCBEEF057C11E2B9 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		36EFB3A1FA3B5165207B475D /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		4C6091912D625A221C013631 /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
 		5AA948AFA5D738F2255F77C1 /* ActualAccounts.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ActualAccounts.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B968D5C0B649D4E6B776BEE /* AllTransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTransactionsView.swift; sourceTree = "<group>"; };
 		9E3A151661FD4F9F25C0710B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A2AF889A0B071948999BD82E /* ActualAccountsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActualAccountsApp.swift; sourceTree = "<group>"; };
 		A9517988C2D34778CE15AB79 /* ActualAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActualAPIClient.swift; sourceTree = "<group>"; };
 		AA0D950B8FEC34803E6C6A69 /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
 		D23D6324A9DE550D93D33E3D /* APIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
 		E82AA06BE50F3BDEBB35EC23 /* LiquidBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidBackground.swift; sourceTree = "<group>"; };
+		EDAD07D429FBAED546E3BAA1 /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
 		FD23F8E4BDA540EC1EBEC868 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		FE216C09FB98CE5C4ECACFCE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,9 +81,18 @@
 		4C3E7258AE27EC9F882F324A /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				4C6091912D625A221C013631 /* GlassCard.swift */,
 				E82AA06BE50F3BDEBB35EC23 /* LiquidBackground.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		80887003B6B4CDDD8D74B18B /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				36EFB3A1FA3B5165207B475D /* DashboardView.swift */,
+			);
+			path = Dashboard;
 			sourceTree = "<group>";
 		};
 		8331E30E175B40C66DC09839 /* Features */ = {
@@ -83,10 +100,21 @@
 			children = (
 				14BF70E767114BBB7E245F72 /* RootView.swift */,
 				BED1A492541A5F671849915B /* Accounts */,
+				80887003B6B4CDDD8D74B18B /* Dashboard */,
 				27D9F3F80C1993A30C727D06 /* Onboarding */,
 				29CB2ED44D4FCFC944EABFCA /* Settings */,
+				A7FF7E6E861B27343A3A48FF /* Transactions */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		A7FF7E6E861B27343A3A48FF /* Transactions */ = {
+			isa = PBXGroup;
+			children = (
+				6B968D5C0B649D4E6B776BEE /* AllTransactionsView.swift */,
+				EDAD07D429FBAED546E3BAA1 /* TransactionsView.swift */,
+			);
+			path = Transactions;
 			sourceTree = "<group>";
 		};
 		B5376A7F854A1B948CE36279 /* Networking */ = {
@@ -204,11 +232,15 @@
 				811CA95F04F9A6C8E7EDAE72 /* AccountsView.swift in Sources */,
 				254C49ACE4F7164650879D09 /* ActualAPIClient.swift in Sources */,
 				57C87B4D2C70DD4FA2787654 /* ActualAccountsApp.swift in Sources */,
+				E815F42DCD39FC3F1A387F6C /* AllTransactionsView.swift in Sources */,
 				3BCD8E59CC7585D0C9766B97 /* AppState.swift in Sources */,
+				3FA813807321D4379DE9FF57 /* DashboardView.swift in Sources */,
+				EB79752CE933E87B143C309F /* GlassCard.swift in Sources */,
 				9E9FAC6B9FFA82D0B4EE6BA8 /* LiquidBackground.swift in Sources */,
 				B21F63AE54A2EE4D82B62082 /* OnboardingView.swift in Sources */,
 				9CB64FF534D5F54FCF28646C /* RootView.swift in Sources */,
 				D8379BA06D631EB7E686C059 /* SettingsView.swift in Sources */,
+				FC1C5B7A9BC8A36B4A87F5BE /* TransactionsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

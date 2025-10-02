@@ -7,10 +7,18 @@ struct AccountsView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var showingCreate = false
+    @State private var balancesById: [String: Int] = [:]
 
-    private var filtered: [Account] {
-        guard !search.isEmpty else { return accounts }
-        return accounts.filter { $0.name.localizedCaseInsensitiveContains(search) }
+    private var onBudget: [Account] {
+        let list = accounts.filter { !$0.offbudget }
+        guard !search.isEmpty else { return list }
+        return list.filter { $0.name.localizedCaseInsensitiveContains(search) }
+    }
+
+    private var offBudget: [Account] {
+        let list = accounts.filter { $0.offbudget }
+        guard !search.isEmpty else { return list }
+        return list.filter { $0.name.localizedCaseInsensitiveContains(search) }
     }
 
     var body: some View {
@@ -18,32 +26,29 @@ struct AccountsView: View {
             ZStack {
                 LiquidBackground()
                 List {
-                    ForEach(filtered) { account in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(account.name)
-                                    .font(.headline)
-                                Text(account.offbudget ? "Off-budget" : "On-budget")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            if account.closed {
-                                Text("Closed")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                    if !onBudget.isEmpty {
+                        Section("On budget") {
+                            ForEach(onBudget) { account in
+                                NavigationLink(destination: TransactionsView(account: account)) {
+                                    row(for: account)
+                                }
+                                .contextMenu { contextMenu(for: account) }
                             }
                         }
-                        .contextMenu {
-                            Button("Close") { Task { await close(account) } }
-                            Button("Reopen") { Task { await reopen(account) } }
-                            Button("Bank Sync") { Task { await bankSync(account) } }
-                            Button(role: .destructive) { Task { await deleteAccount(account) } } label: { Text("Delete") }
+                    }
+                    if !offBudget.isEmpty {
+                        Section("Off budget") {
+                            ForEach(offBudget) { account in
+                                NavigationLink(destination: TransactionsView(account: account)) {
+                                    row(for: account)
+                                }
+                                .contextMenu { contextMenu(for: account) }
+                            }
                         }
                     }
                 }
                 .searchable(text: $search)
-                .refreshable { await load() }
+                .refreshable { await hardReload() }
                 .overlay(alignment: .bottomTrailing) {
                     Button { showingCreate = true } label: {
                         Image(systemName: "plus")
@@ -61,9 +66,14 @@ struct AccountsView: View {
                         Image(systemName: "gearshape")
                     }
                 }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    NavigationLink(destination: DashboardView()) {
+                        Image(systemName: "gauge" )
+                    }
+                }
             }
         }
-        .task { await load() }
+        .onAppear { Task { await softReload() } }
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
             Button("OK") { errorMessage = nil }
         } message: {
@@ -77,6 +87,31 @@ struct AccountsView: View {
         }
     }
 
+    private func row(for account: Account) -> some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(account.name)
+                    .font(.headline)
+                Text(account.offbudget ? "Off-budget" : "On-budget")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text(formattedAmount(balancesById[account.id]))
+                .font(.headline)
+                .monospacedDigit()
+                .foregroundStyle(.primary)
+        }
+        .task { await loadBalanceIfNeeded(account) }
+    }
+
+    @ViewBuilder private func contextMenu(for account: Account) -> some View {
+        Button("Close") { Task { await close(account) } }
+        Button("Reopen") { Task { await reopen(account) } }
+        Button("Bank Sync") { Task { await bankSync(account) } }
+        Button(role: .destructive) { Task { await deleteAccount(account) } } label: { Text("Delete") }
+    }
+
     private func client() throws -> ActualAPIClient {
         try ActualAPIClient(
             baseURLString: appState.baseURLString,
@@ -86,42 +121,78 @@ struct AccountsView: View {
         )
     }
 
-    private func load() async {
+    private func hardReload() async { await load(clearBalances: true) }
+    private func softReload() async { await load(clearBalances: false) }
+
+    private func load(clearBalances: Bool) async {
         isLoading = true
         defer { isLoading = false }
         do {
-            let accounts = try await client().fetchAccounts()
-            await MainActor.run { self.accounts = accounts }
+            let list = try await client().fetchAccounts()
+            await MainActor.run {
+                self.accounts = list
+                if clearBalances { self.balancesById.removeAll() }
+            }
         } catch {
             await MainActor.run { errorMessage = error.localizedDescription }
         }
     }
 
+    private func loadBalanceIfNeeded(_ account: Account) async {
+        if balancesById[account.id] != nil { return }
+        do {
+            let bal = try await fetchBalance(accountId: account.id)
+            await MainActor.run { balancesById[account.id] = bal }
+        } catch {
+            // ignore per-row errors
+        }
+    }
+
+    private func fetchBalance(accountId: String) async throws -> Int {
+        let url = APIEndpoints.accountBalance(base: try APIEndpoints.baseURL(from: appState.baseURLString), syncId: appState.syncId, accountId: accountId)
+        var req = URLRequest(url: url)
+        req.httpMethod = "GET"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue(appState.apiKey, forHTTPHeaderField: "x-api-key")
+        if !appState.budgetEncryptionPassword.isEmpty { req.setValue(appState.budgetEncryptionPassword, forHTTPHeaderField: "budget-encryption-password") }
+        let (data, resp) = try await URLSession.shared.data(for: req)
+        guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { throw URLError(.badServerResponse) }
+        let decoded = try JSONDecoder().decode(APIResponse<Int>.self, from: data)
+        return decoded.data
+    }
+
+    private func formattedAmount(_ amount: Int?) -> String {
+        let value = Double(amount ?? 0) / 100.0
+        let f = NumberFormatter()
+        f.numberStyle = .currency
+        return f.string(from: NSNumber(value: value)) ?? String(value)
+    }
+
     private func createAccount(name: String, offbudget: Bool) async {
         do {
             _ = try await client().createAccount(name: name, offbudget: offbudget)
-            await load()
+            await hardReload()
         } catch { await MainActor.run { errorMessage = error.localizedDescription } }
     }
 
     private func deleteAccount(_ account: Account) async {
         do {
             try await client().deleteAccount(accountId: account.id)
-            await load()
+            await hardReload()
         } catch { await MainActor.run { errorMessage = error.localizedDescription } }
     }
 
     private func close(_ account: Account) async {
         do {
             try await client().closeAccount(accountId: account.id, transferAccountId: nil, transferCategoryId: nil)
-            await load()
+            await hardReload()
         } catch { await MainActor.run { errorMessage = error.localizedDescription } }
     }
 
     private func reopen(_ account: Account) async {
         do {
             try await client().reopenAccount(accountId: account.id)
-            await load()
+            await hardReload()
         } catch { await MainActor.run { errorMessage = error.localizedDescription } }
     }
 
@@ -155,4 +226,5 @@ private struct CreateAccountSheet: View {
         }
     }
 }
+
 

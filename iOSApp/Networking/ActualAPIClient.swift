@@ -25,6 +25,66 @@ final class ActualAPIClient {
         return try JSONDecoder().decode(AccountsListResponse.self, from: data).data
     }
 
+    func fetchCategories() async throws -> [Category] {
+        let url = APIEndpoints.categories(base: baseURL, syncId: syncId)
+        let request = try buildRequest(url: url, method: "GET")
+        let (data, response) = try await session.data(for: request)
+        try ensureSuccess(response: response, data: data)
+        return try JSONDecoder().decode(CategoriesListResponse.self, from: data).data
+    }
+
+    func fetchPayees() async throws -> [Payee] {
+        let url = APIEndpoints.payees(base: baseURL, syncId: syncId)
+        let request = try buildRequest(url: url, method: "GET")
+        let (data, response) = try await session.data(for: request)
+        try ensureSuccess(response: response, data: data)
+        return try JSONDecoder().decode(PayeesListResponse.self, from: data).data
+    }
+
+    func fetchTransactions(accountId: String, since: String? = nil, until: String? = nil, page: Int? = nil, limit: Int? = nil) async throws -> [Transaction] {
+        let comps = APIEndpoints.accountTransactions(base: baseURL, syncId: syncId, accountId: accountId, since: since, until: until, page: page, limit: limit)
+        let request = try buildRequest(url: try requireURL(comps), method: "GET")
+        let (data, response) = try await session.data(for: request)
+        try ensureSuccess(response: response, data: data)
+        return try JSONDecoder().decode(TransactionsListResponse.self, from: data).data
+    }
+
+    func createTransaction(accountId: String, transaction: Transaction, learnCategories: Bool = false, runTransfers: Bool = false) async throws {
+        let url = APIEndpoints.accountTransactions(base: baseURL, syncId: syncId, accountId: accountId, since: nil, until: nil, page: nil, limit: nil).url!
+        var request = try buildRequest(url: url, method: "POST")
+        var body: [String: Any] = [
+            "learnCategories": learnCategories,
+            "runTransfers": runTransfers
+        ]
+        body["transaction"] = serialize(transaction)
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let (data, response) = try await session.data(for: request)
+        try ensureSuccess(response: response, data: data)
+    }
+
+    func updateTransaction(transactionId: String, transaction: Transaction) async throws {
+        let url = APIEndpoints.transaction(base: baseURL, syncId: syncId, transactionId: transactionId)
+        var request = try buildRequest(url: url, method: "PATCH")
+        request.httpBody = try JSONSerialization.data(withJSONObject: ["transaction": serialize(transaction)])
+        let (data, response) = try await session.data(for: request)
+        try ensureSuccess(response: response, data: data)
+    }
+
+    func deleteTransaction(transactionId: String) async throws {
+        let url = APIEndpoints.transaction(base: baseURL, syncId: syncId, transactionId: transactionId)
+        let request = try buildRequest(url: url, method: "DELETE")
+        let (data, response) = try await session.data(for: request)
+        try ensureSuccess(response: response, data: data)
+    }
+
+    func fetchBudgetMonth(_ month: String) async throws -> BudgetMonth {
+        let url = APIEndpoints.month(base: baseURL, syncId: syncId, month: month)
+        let request = try buildRequest(url: url, method: "GET")
+        let (data, response) = try await session.data(for: request)
+        try ensureSuccess(response: response, data: data)
+        return try JSONDecoder().decode(APIResponse<BudgetMonth>.self, from: data).data
+    }
+
     func createAccount(name: String, offbudget: Bool) async throws -> String {
         let url = APIEndpoints.accounts(base: baseURL, syncId: syncId)
         var request = try buildRequest(url: url, method: "POST")
@@ -100,12 +160,34 @@ final class ActualAPIClient {
         return request
     }
 
+    private func requireURL(_ components: URLComponents) throws -> URL {
+        guard let url = components.url else { throw URLError(.badURL) }
+        return url
+    }
+
     private func ensureSuccess(response: URLResponse, data: Data) throws {
         guard let http = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
         guard (200..<300).contains(http.statusCode) else {
             let serverMessage = String(data: data, encoding: .utf8) ?? ""
             throw APIError.httpError(status: http.statusCode, body: serverMessage)
         }
+    }
+
+    private func serialize(_ tx: Transaction) -> [String: Any] {
+        var dict: [String: Any] = [
+            "account": tx.account,
+            "date": tx.date
+        ]
+        if let id = tx.id { dict["id"] = id }
+        if let amount = tx.amount { dict["amount"] = amount }
+        if let payee = tx.payee { dict["payee"] = payee }
+        if let payeeName = tx.payee_name { dict["payee_name"] = payeeName }
+        if let category = tx.category { dict["category"] = category }
+        if let notes = tx.notes { dict["notes"] = notes }
+        if let importedId = tx.imported_id { dict["imported_id"] = importedId }
+        if let transferId = tx.transfer_id { dict["transfer_id"] = transferId }
+        if let cleared = tx.cleared { dict["cleared"] = cleared }
+        return dict
     }
 }
 
