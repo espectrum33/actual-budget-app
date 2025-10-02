@@ -65,7 +65,7 @@ struct AccountsView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text(title)
                 .font(AppTheme.Fonts.title)
-                .foregroundColor(.primary) // Changed
+                .foregroundColor(.primary)
                 .padding(.horizontal)
 
             ForEach(accounts) { account in
@@ -75,15 +75,15 @@ struct AccountsView: View {
                             VStack(alignment: .leading) {
                                 Text(account.name)
                                     .font(AppTheme.Fonts.headline)
-                                    .foregroundColor(.primary) // Changed
+                                    .foregroundColor(.primary)
                                 Text(account.closed ? "Closed" : "Active")
                                     .font(AppTheme.Fonts.footnote)
-                                    .foregroundStyle(account.closed ? .yellow : .secondary) // Changed
+                                    .foregroundStyle(account.closed ? .yellow : .secondary)
                             }
                             Spacer()
                             Text(formattedAmount(balancesById[account.id]))
                                 .font(AppTheme.Fonts.body.monospacedDigit())
-                                .foregroundColor(.primary) // Changed
+                                .foregroundColor(.primary)
                         }
                     }
                     .task { await loadBalanceIfNeeded(account) }
@@ -93,7 +93,7 @@ struct AccountsView: View {
         }
     }
 
-    // MARK: - Data Logic (Unchanged)
+    // MARK: - Data Logic
     private func client() throws -> ActualAPIClient {
         try ActualAPIClient(
             baseURLString: appState.baseURLString,
@@ -155,3 +155,40 @@ struct AccountsView: View {
         } catch { await MainActor.run { errorMessage = error.localizedDescription } }
     }
 }
+
+private struct CreateAccountSheet: View {
+    var onCreate: (String, Bool) -> Void
+    @Environment(\.dismiss) private var dismiss
+    @State private var name: String = ""
+    @State private var offbudget: Bool = false
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                AppBackground()
+                Form {
+                    Section(header: Text("Account Details")) {
+                        TextField("Name", text: $name)
+                        Toggle("Off-budget account", isOn: $offbudget)
+                    }
+                    .listRowBackground(Color.primary.opacity(0.05))
+                }
+                .scrollContentBackground(.hidden)
+            }
+            .navigationTitle("New Account")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Create") {
+                        onCreate(name, offbudget)
+                        dismiss()
+                    }
+                    .disabled(name.isEmpty)
+                }
+            }
+            .tint(AppTheme.accent)
+        }
+    }
+}
+
