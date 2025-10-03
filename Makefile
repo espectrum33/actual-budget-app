@@ -30,8 +30,6 @@ all: ios-unsigned
 .PHONY: ios-unsigned
 ios-unsigned: clean project
 	@echo "\n--- Step 1: Creating Self-Signed Certificate ---"
-	@chmod +x create_self_signed_cert.sh
-	@./create_self_signed_cert.sh
 	
 	@echo "\n--- Step 2: Archiving with Self-Signed Certificate ---"
 	@$(XCODEBUILD) -project $(PROJECT_FILE) \
