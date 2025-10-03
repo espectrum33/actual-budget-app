@@ -30,27 +30,30 @@ struct SettingsView: View {
                             Text("Preferences")
                                 .font(AppTheme.Fonts.subtitle)
                                 .foregroundColor(.primary)
-                            
-                            Picker("Theme", selection: $appState.currentTheme) {
-                                ForEach(AppState.Theme.allCases) { theme in
-                                    Text(theme.rawValue).tag(theme)
-                                }
-                            }
-                            
-                            Picker("Currency", selection: $appState.currencyCode) {
-                                ForEach(CurrencyFormatter.supportedCurrencies, id: \.0) { code, name in
-                                    Text("\(code) - \(name)").tag(code)
-                                }
-                            }
-                            .tint(AppTheme.accent)
-                        }
-                    }
 
-                    GlassCard {
-                        VStack(alignment: .leading, spacing: 12) {
-                             Text("Advanced")
-                                .font(AppTheme.Fonts.subtitle)
-                                .foregroundColor(.primary)
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Theme:")
+                                    .font(AppTheme.Fonts.subheadline)
+                                    .foregroundStyle(.secondary)
+                                Picker("Theme", selection: $appState.currentTheme) {
+                                    ForEach(AppState.Theme.allCases) { theme in
+                                        Text(theme.rawValue).tag(theme)
+                                    }
+                                }
+                                .tint(AppTheme.accent)
+                            }
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Currency:")
+                                    .font(AppTheme.Fonts.subheadline)
+                                    .foregroundStyle(.secondary)
+                                Picker("Currency", selection: $appState.currencyCode) {
+                                    ForEach(CurrencyFormatter.supportedCurrencies, id: \.0) { code, name in
+                                        Text("\(code) - \(name)").tag(code)
+                                    }
+                                }
+                                .tint(AppTheme.accent)
+                            }
 
                             Toggle("Enable Demo Mode", isOn: $appState.isDemoMode)
                                 .tint(AppTheme.accent)
@@ -66,6 +69,17 @@ struct SettingsView: View {
                     }
                 }
                 .padding()
+                
+                HStack(spacing: 6) {
+                    Spacer()
+                    Image(systemName: "heart.fill").foregroundColor(.red)
+                    Link(destination: URL(string: "https://github.com/bearts")!) {
+                        Text("Made with love by Anuj Parihar")
+                            .font(AppTheme.Fonts.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
             }
         }
         .navigationTitle("Settings")
