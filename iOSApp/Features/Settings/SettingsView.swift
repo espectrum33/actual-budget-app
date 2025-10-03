@@ -31,7 +31,6 @@ struct SettingsView: View {
                                 .font(AppTheme.Fonts.subtitle)
                                 .foregroundColor(.primary)
                             
-                            // --- NEW: Theme Picker ---
                             Picker("Theme", selection: $appState.currentTheme) {
                                 ForEach(AppState.Theme.allCases) { theme in
                                     Text(theme.rawValue).tag(theme)

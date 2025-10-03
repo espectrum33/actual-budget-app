@@ -13,7 +13,8 @@ struct AllTransactionsView: View {
     @State private var onBudgetOnly: Bool = true
     @State private var filterGranularity: Granularity = .day
     @State private var filterValue: Int = 30
-    @State private var showingAdd: Bool = false
+    
+    @State private var activeSheet: SheetType?
 
     enum Granularity: String, CaseIterable, Identifiable {
         case day = "Days", week = "Weeks", month = "Months", year = "Years"
@@ -48,6 +49,9 @@ struct AllTransactionsView: View {
 
                 ForEach(listTransactions, id: \.id) { tx in
                     transactionRow(tx)
+                        .onTapGesture {
+                            activeSheet = .edit(tx)
+                        }
                 }
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
@@ -58,13 +62,20 @@ struct AllTransactionsView: View {
         .navigationTitle("All Transactions")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button { showingAdd = true } label: { Image(systemName: "plus") }
+                Button {
+                    activeSheet = .add
+                } label: { Image(systemName: "plus") }
             }
         }
         .task { await load() }
         .refreshable { await load() }
-        .sheet(isPresented: $showingAdd) {
-            TransactionEditor(onSave: { _ in Task { await load() } })
+        .sheet(item: $activeSheet) { sheetType in
+            switch sheetType {
+            case .add:
+                TransactionEditor(transaction: nil, initialAccountId: nil, onSave: { _ in Task { await load() } })
+            case .edit(let transaction):
+                TransactionEditor(transaction: transaction, initialAccountId: nil, onSave: { _ in Task { await load() } })
+            }
         }
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
             Button("OK") { errorMessage = nil }
@@ -80,23 +91,23 @@ struct AllTransactionsView: View {
             VStack(alignment: .leading) {
                 Text(payeeText(tx))
                     .font(AppTheme.Fonts.headline)
-                    .foregroundColor(.primary) // Changed
+                    .foregroundColor(.primary)
                 Text(accounts.first { $0.id == tx.account }?.name ?? "Unknown Account")
                     .font(AppTheme.Fonts.footnote)
-                    .foregroundStyle(.secondary) // Changed
+                    .foregroundStyle(.secondary)
             }
             Spacer()
             VStack(alignment: .trailing) {
                 Text(formattedSignedAmount(tx.amount))
                     .font(AppTheme.Fonts.body.monospacedDigit())
-                    .foregroundStyle((tx.amount ?? 0) < 0 ? .primary : AppTheme.positive) // Changed
+                    .foregroundStyle((tx.amount ?? 0) < 0 ? .primary : AppTheme.positive)
                 Text(tx.date)
                     .font(AppTheme.Fonts.caption)
-                    .foregroundStyle(.secondary) // Changed
+                    .foregroundStyle(.secondary)
             }
         }
         .padding()
-        .background(Color.primary.opacity(0.05)) // Changed
+        .background(Color.primary.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
     }
 
@@ -115,12 +126,11 @@ struct AllTransactionsView: View {
                 
                 Stepper("Last \(filterValue) \(filterGranularity.rawValue)", value: $filterValue, in: 1...365)
             }
-            .foregroundColor(.primary) // Changed
+            .foregroundColor(.primary)
         }
         .padding(.bottom)
     }
 
-    // MARK: - Data Logic (Unchanged)
     private func isTransferToOnBudget(_ tx: Transaction) -> Bool {
         if let payeeId = tx.payee, let p = payeesById[payeeId], let destId = p.transfer_acct {
             if let dest = accounts.first(where: { $0.id == destId }) {

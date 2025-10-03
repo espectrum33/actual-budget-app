@@ -49,10 +49,10 @@ struct BudgetView: View {
             VStack(alignment: .leading) {
                 Text("To Be Budgeted")
                     .font(AppTheme.Fonts.body)
-                    .foregroundStyle(.secondary) // Changed
+                    .foregroundStyle(.secondary) 
                 Text(formatMoney(budget?.toBudget ?? 0))
                     .font(AppTheme.Fonts.title)
-                    .foregroundColor( (budget?.toBudget ?? 0) < 0 ? AppTheme.destructive : .primary) // Changed
+                    .foregroundColor( (budget?.toBudget ?? 0) < 0 ? AppTheme.destructive : .primary) 
                     .monospacedDigit()
                 
                 Divider().padding(.vertical, 8)
@@ -85,14 +85,14 @@ struct BudgetView: View {
                     HStack {
                         Text(group.name)
                             .font(AppTheme.Fonts.subtitle)
-                            .foregroundColor(.primary) // Changed
+                            .foregroundColor(.primary) 
                         Spacer()
                         Text(formatMoney(group.balance ?? 0))
                             .font(AppTheme.Fonts.body.monospacedDigit())
-                            .foregroundStyle(.secondary) // Changed
+                            .foregroundStyle(.secondary) 
                     }
                 }
-                .accentColor(.secondary) // Changed
+                .accentColor(.secondary) 
             }
             .padding()
             .background(Color.primary.opacity(0.05))
@@ -105,11 +105,11 @@ struct BudgetView: View {
             HStack {
                 Text(category.name)
                     .font(AppTheme.Fonts.headline)
-                    .foregroundColor(.primary) // Changed
+                    .foregroundColor(.primary) 
                 Spacer()
                 Text(formatMoney(category.balance ?? 0))
                     .font(AppTheme.Fonts.subheadline.monospacedDigit())
-                    .foregroundColor( (category.balance ?? 0) < 0 ? AppTheme.destructive : .primary) // Changed
+                    .foregroundColor( (category.balance ?? 0) < 0 ? AppTheme.destructive : .primary) 
             }
             
             let spent = abs(category.spent ?? 0)
@@ -126,7 +126,7 @@ struct BudgetView: View {
                 Text("Budgeted: \(formatMoney(budgeted))")
             }
             .font(AppTheme.Fonts.footnote)
-            .foregroundStyle(.secondary) // Changed
+            .foregroundStyle(.secondary) 
         }
     }
 
@@ -134,14 +134,13 @@ struct BudgetView: View {
         VStack(alignment: .leading) {
             Text(label)
                 .font(AppTheme.Fonts.footnote)
-                .foregroundStyle(.secondary) // Changed
+                .foregroundStyle(.secondary) 
             Text(formatMoney(value))
                 .font(AppTheme.Fonts.subheadline.monospacedDigit())
-                .foregroundStyle(.primary) // Changed
+                .foregroundStyle(.primary) 
         }
     }
     
-    // MARK: - Data Logic (Unchanged)
     private func sortedGroups() -> [BudgetMonthCategoryGroup] {
         let income = monthGroups.filter { $0.is_income == true }
         let spend = monthGroups.filter { $0.is_income != true }

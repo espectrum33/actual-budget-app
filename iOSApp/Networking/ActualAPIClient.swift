@@ -17,7 +17,6 @@ final class ActualAPIClient {
         self.isDemoMode = isDemoMode
     }
 
-    // MARK: - Public API
 
     func fetchAccounts() async throws -> [Account] {
         if isDemoMode {
@@ -165,8 +164,6 @@ final class ActualAPIClient {
         let (data, response) = try await session.data(for: request)
         try ensureSuccess(response: response, data: data)
     }
-
-    // MARK: - Helpers
 
     private func buildRequest(url: URL, method: String) throws -> URLRequest {
         var request = URLRequest(url: url)

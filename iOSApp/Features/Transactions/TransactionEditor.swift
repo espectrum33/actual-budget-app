@@ -15,16 +15,57 @@ struct TransactionEditor: View {
     @State private var payees: [Payee] = []
     @State private var errorMessage: String?
     
-    // Form State
-    @State private var date: Date = Date()
-    @State private var amountString: String = "0.00"
-    @State private var isNegative: Bool = true
-    @State private var selectedPayeeId: String = ""
-    @State private var customPayee: String = ""
-    @State private var payeeMode: PayeeInputMode = .picker
-    @State private var notes: String = ""
+    @State private var date: Date
+    @State private var amountString: String
+    @State private var isNegative: Bool
+    @State private var selectedPayeeId: String
+    @State private var customPayee: String
+    @State private var payeeMode: PayeeInputMode
+    @State private var notes: String
     @State private var categoryId: String?
-    @State private var selectedAccountId: String = ""
+    @State private var selectedAccountId: String
+
+    init(transaction: Transaction?, initialAccountId: String?, onSave: @escaping (Transaction) -> Void) {
+        self.transaction = transaction
+        self.initialAccountId = initialAccountId
+        self.onSave = onSave
+
+        if let t = transaction {
+            // Editing an existing transaction: Initialize state from the transaction object
+            _date = State(initialValue: Self.parseDate(t.date) ?? Date())
+            _amountString = State(initialValue: Self.formatAmountForDisplay(abs(t.amount ?? 0)))
+            _isNegative = State(initialValue: (t.amount ?? 0) < 0)
+            
+            if let payeeId = t.payee, !payeeId.isEmpty {
+                _selectedPayeeId = State(initialValue: payeeId)
+                _payeeMode = State(initialValue: .picker)
+                _customPayee = State(initialValue: "")
+            } else if let payeeName = t.payee_name, !payeeName.isEmpty {
+                _customPayee = State(initialValue: payeeName)
+                _payeeMode = State(initialValue: .custom)
+                _selectedPayeeId = State(initialValue: "")
+            } else {
+                _payeeMode = State(initialValue: .picker)
+                _selectedPayeeId = State(initialValue: "")
+                _customPayee = State(initialValue: "")
+            }
+            
+            _notes = State(initialValue: t.notes ?? "")
+            _categoryId = State(initialValue: t.category)
+            _selectedAccountId = State(initialValue: t.account)
+        } else {
+            // Creating a new transaction: Initialize with default values
+            _date = State(initialValue: Date())
+            _amountString = State(initialValue: "0.00")
+            _isNegative = State(initialValue: true)
+            _selectedPayeeId = State(initialValue: "")
+            _customPayee = State(initialValue: "")
+            _payeeMode = State(initialValue: .picker)
+            _notes = State(initialValue: "")
+            _categoryId = State(initialValue: nil)
+            _selectedAccountId = State(initialValue: initialAccountId ?? "")
+        }
+    }
 
     var body: some View {
         NavigationView {
@@ -44,7 +85,6 @@ struct TransactionEditor: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Save", action: save).bold() }
             }
             .task { await load() }
-            .onAppear(perform: setupInitialState)
             .alert("Error", isPresented: .constant(errorMessage != nil)) {
                 Button("OK") { errorMessage = nil }
             } message: { Text(errorMessage ?? "") }
@@ -61,7 +101,7 @@ struct TransactionEditor: View {
                     }
                 }
             }
-            .listRowBackground(Color.primary.opacity(0.05)) // Changed
+            .listRowBackground(Color.primary.opacity(0.05))
             
             Section("Details") {
                 DatePicker("Date", selection: $date, displayedComponents: .date)
@@ -104,9 +144,9 @@ struct TransactionEditor: View {
                 
                 TextField("Notes", text: $notes)
             }
-            .listRowBackground(Color.primary.opacity(0.05)) // Changed
+            .listRowBackground(Color.primary.opacity(0.05))
         }
-        .scrollContentBackground(.hidden) // This allows AppBackground to show through
+        .scrollContentBackground(.hidden)
     }
     
     private func buildTransaction() -> Transaction {
@@ -119,7 +159,7 @@ struct TransactionEditor: View {
         return Transaction(
             id: transaction?.id,
             account: selectedAccountId,
-            date: formatDate(date),
+            date: Self.formatDate(date),
             amount: signed,
             payee: payeeId,
             payee_name: payeeName,
@@ -130,31 +170,6 @@ struct TransactionEditor: View {
         )
     }
 
-    private func setupInitialState() {
-        if let t = transaction {
-            date = parseDate(t.date) ?? Date()
-            amountString = formatAmountForDisplay(abs(t.amount ?? 0))
-            isNegative = (t.amount ?? 0) < 0
-            
-            if let payeeId = t.payee, !payeeId.isEmpty {
-                selectedPayeeId = payeeId
-                payeeMode = .picker
-            } else if let payeeName = t.payee_name, !payeeName.isEmpty {
-                customPayee = payeeName
-                payeeMode = .custom
-            } else {
-                payeeMode = .picker
-            }
-            
-            notes = t.notes ?? ""
-            categoryId = t.category
-            selectedAccountId = t.account
-        } else {
-            selectedAccountId = initialAccountId ?? accounts.first?.id ?? ""
-        }
-    }
-    
-    // MARK: - Unchanged Data Logic
     private func save() {
         Task {
             do {
@@ -192,7 +207,8 @@ struct TransactionEditor: View {
                 accounts = a.filter { !$0.closed }
                 categoriesById = Dictionary(uniqueKeysWithValues: c.map { ($0.id, $0.name) })
                 payees = p.sorted { $0.name < $1.name }
-                if transaction == nil {
+                
+                if transaction == nil && selectedAccountId.isEmpty {
                     selectedAccountId = initialAccountId ?? accounts.first?.id ?? ""
                 }
             }
@@ -201,13 +217,13 @@ struct TransactionEditor: View {
         }
     }
 
-    private func parseDate(_ str: String) -> Date? {
+    private static func parseDate(_ str: String) -> Date? {
         let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd"; return f.date(from: str)
     }
-    private func formatDate(_ date: Date) -> String {
+    private static func formatDate(_ date: Date) -> String {
         let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd"; return f.string(from: date)
     }
-    private func formatAmountForDisplay(_ amount: Int) -> String {
+    private static func formatAmountForDisplay(_ amount: Int) -> String {
         String(format: "%.2f", Double(amount) / 100.0)
     }
     private func parseAmountFromDisplay(_ display: String) -> Int {

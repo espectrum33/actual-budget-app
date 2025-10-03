@@ -1,36 +1,4 @@
-// import SwiftUI
-
-// struct RootView: View {
-//     @EnvironmentObject private var appState: AppState
-//     @State private var selectedTab: Int = 2 // default to Transactions
-
-//     var body: some View {
-//         Group {
-//             if appState.isConfigured {
-//                 TabView(selection: $selectedTab) {
-//                     NavigationStack { DashboardView() }
-//                         .tabItem { Label("Dashboard", systemImage: "gauge") }
-//                         .tag(0)
-//                     NavigationStack { AccountsView() }
-//                         .tabItem { Label("Accounts", systemImage: "creditcard") }
-//                         .tag(1)
-//                     NavigationStack { AllTransactionsView() }
-//                         .tabItem { Label("Transactions", systemImage: "list.bullet.rectangle") }
-//                         .tag(2)
-//                     NavigationStack { BudgetView() }
-//                         .tabItem { Label("Budget", systemImage: "chart.pie") }
-//                         .tag(3)
-//                 }
-//                 .accentColor(AppTheme.accent)
-//                 .background(AppTheme.background.ignoresSafeArea())
-//             } else {
-//                 OnboardingView()
-//                     .background(AppTheme.background.ignoresSafeArea())
-//             }
-//         }
-//         .preferredColorScheme(.dark)
-//     }
-// }
+// RootView.swift
 
 import SwiftUI
 
@@ -64,10 +32,8 @@ struct MainTabView: View {
         }
         .tint(AppTheme.accent)
         .sheet(isPresented: $appStateObserver.shouldShowAddSheet) {
-            TransactionEditor(onSave: { _ in })
+            TransactionEditor(transaction: nil, initialAccountId: nil, onSave: { _ in })
         }
-        // --- THIS IS THE KEY CHANGE ---
-        // It forces the entire app to adopt the correct color scheme.
         .preferredColorScheme(colorScheme)
     }
 }

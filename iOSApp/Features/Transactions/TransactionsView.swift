@@ -8,8 +8,8 @@ struct TransactionsView: View {
     @State private var categoriesById: [String: String] = [:]
     @State private var payeesById: [String: Payee] = [:]
     @State private var errorMessage: String?
-    @State private var showingEditor: Bool = false
-    @State private var editingTransaction: Transaction?
+    
+    @State private var activeSheet: SheetType?
 
     var sortedTransactions: [Transaction] {
         transactions.sorted { ($0.date) > ($1.date) }
@@ -22,8 +22,7 @@ struct TransactionsView: View {
                 ForEach(sortedTransactions, id: \.id) { tx in
                     transactionRow(tx)
                         .onTapGesture {
-                            editingTransaction = tx
-                            showingEditor = true
+                            activeSheet = .edit(tx)
                         }
                         .contextMenu { contextMenuItems(for: tx) }
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
@@ -42,19 +41,19 @@ struct TransactionsView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    editingTransaction = nil
-                    showingEditor = true
+                    activeSheet = .add
                 } label: { Image(systemName: "plus") }
             }
         }
         .task { await loadAll() }
         .refreshable { await loadAll() }
-        .sheet(isPresented: $showingEditor) {
-            TransactionEditor(
-                transaction: editingTransaction,
-                initialAccountId: account.id,
-                onSave: { _ in Task { await loadAll() } }
-            )
+        .sheet(item: $activeSheet) { sheetType in
+            switch sheetType {
+            case .add:
+                TransactionEditor(transaction: nil, initialAccountId: account.id, onSave: { _ in Task { await loadAll() } })
+            case .edit(let transaction):
+                TransactionEditor(transaction: transaction, initialAccountId: account.id, onSave: { _ in Task { await loadAll() } })
+            }
         }
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
             Button("OK") { errorMessage = nil }
@@ -87,25 +86,25 @@ struct TransactionsView: View {
             VStack(alignment: .leading) {
                 Text(payeeText(tx))
                     .font(AppTheme.Fonts.headline)
-                    .foregroundColor(.primary) // Changed
+                    .foregroundColor(.primary)
                 if let categoryName = categoryName(tx.category), !categoryName.isEmpty {
                     Text(categoryName)
                         .font(AppTheme.Fonts.footnote)
-                        .foregroundStyle(.secondary) // Changed
+                        .foregroundStyle(.secondary)
                 }
             }
             Spacer()
             VStack(alignment: .trailing) {
                 Text(formattedSignedAmount(tx.amount))
                     .font(AppTheme.Fonts.body.monospacedDigit())
-                    .foregroundStyle((tx.amount ?? 0) < 0 ? .primary : AppTheme.positive) // Changed
+                    .foregroundStyle((tx.amount ?? 0) < 0 ? .primary : AppTheme.positive)
                 Text(tx.date)
                     .font(AppTheme.Fonts.caption)
-                    .foregroundStyle(.secondary) // Changed
+                    .foregroundStyle(.secondary)
             }
         }
         .padding()
-        .background(Color.primary.opacity(0.05)) // Changed
+        .background(Color.primary.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
     }
 

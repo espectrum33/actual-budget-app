@@ -93,7 +93,6 @@ struct AccountsView: View {
         }
     }
 
-    // MARK: - Data Logic
     private func client() throws -> ActualAPIClient {
         try ActualAPIClient(
             baseURLString: appState.baseURLString,

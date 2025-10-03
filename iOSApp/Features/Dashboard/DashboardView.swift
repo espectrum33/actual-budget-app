@@ -7,7 +7,8 @@ struct DashboardView: View {
     @State private var payeesById: [String: Payee] = [:]
     @State private var transactions: [Transaction] = []
     @State private var errorMessage: String?
-    @State private var showingAdd: Bool = false
+    
+    @State private var activeSheet: SheetType?
 
     var onBudgetAccounts: [Account] { accounts.filter { !$0.offbudget } }
 
@@ -49,7 +50,14 @@ struct DashboardView: View {
         }
         .navigationBarHidden(true)
         .task { await load() }
-        .sheet(isPresented: $showingAdd) { TransactionEditor(onSave: { _ in Task { await load() } }) }
+        .sheet(item: $activeSheet) { sheetType in
+            switch sheetType {
+            case .add:
+                TransactionEditor(transaction: nil, initialAccountId: nil, onSave: { _ in Task { await load() } })
+            case .edit(let transaction):
+                TransactionEditor(transaction: transaction, initialAccountId: nil, onSave: { _ in Task { await load() } })
+            }
+        }
         .alert("Error", isPresented: .constant(errorMessage != nil), actions: {
             Button("OK") { errorMessage = nil }
         }, message: {
@@ -81,13 +89,15 @@ struct DashboardView: View {
                 VStack(spacing: 12) {
                     ForEach(recent, id: \.id) { tx in
                         transactionRow(tx)
+                            .onTapGesture {
+                                activeSheet = .edit(tx)
+                            }
                     }
                 }
             }
             
-            // --- NEW: Add Transaction Button ---
             Button {
-                showingAdd = true
+                activeSheet = .add
             } label: {
                 HStack {
                     Image(systemName: "plus")
@@ -142,7 +152,6 @@ struct DashboardView: View {
         }
     }
 
-    // MARK: - Data Logic (Unchanged)
     private func client() throws -> ActualAPIClient {
         try ActualAPIClient(
             baseURLString: appState.baseURLString,
@@ -232,6 +241,7 @@ struct DashboardView: View {
     private func format(date: Date) -> String {
         let f = DateFormatter()
         f.calendar = Calendar(identifier: .gregorian)
+        f.timeZone = .current
         f.dateFormat = "yyyy-MM-dd"
         return f.string(from: date)
     }

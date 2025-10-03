@@ -16,7 +16,6 @@ struct AddTransactionIntent: AppIntent {
     }
 }
 
-// This helper class allows the intent to communicate with your SwiftUI views
 class AppStateObserver: ObservableObject {
     static let shared = AppStateObserver()
     @Published var shouldShowAddSheet: Bool = false
@@ -26,7 +25,6 @@ class AppStateObserver: ObservableObject {
     }
 }
 
-// This makes your shortcut easily discoverable
 struct ActualShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
