@@ -9,7 +9,7 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            LiquidBackground()
+            Color.black.ignoresSafeArea()
             VStack(spacing: 24) {
                 Spacer()
                 Text("Connect to Actual Server")
@@ -19,19 +19,54 @@ struct OnboardingView: View {
 
                 GlassCard {
                     VStack(spacing: 16) {
-                        TextField("Base URL (e.g. https://example.com/v1)", text: $baseURL)
-                            .textContentType(.URL)
-                            .keyboardType(.URL)
-                            .autocapitalization(.none)
-                        
-                        TextField("API Key", text: $apiKey)
-                            .textContentType(.password)
-                            .autocapitalization(.none)
-                        
-                        TextField("Sync ID", text: $syncId)
-                            .autocapitalization(.none)
-                        
-                        SecureField("Budget Encryption Password (optional)", text: $password)
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Base URL")
+                                .font(AppTheme.Fonts.subheadline)
+                                .foregroundColor(.white.opacity(0.8))
+                            TextField("", text: $baseURL, prompt: Text("https://example.com/v1").foregroundColor(.white.opacity(0.6)))
+                                .foregroundColor(.white)
+                                .tint(Color.white.opacity(0.85))
+                                .textContentType(.URL)
+                                .keyboardType(.URL)
+                                .autocapitalization(.none)
+                                .textInputAutocapitalization(.never)
+                                .disableAutocorrection(true)
+                           
+                        }
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("API Key")
+                                .font(AppTheme.Fonts.subheadline)
+                                .foregroundColor(.white.opacity(0.8))
+                            TextField("", text: $apiKey, prompt: Text("Your API Key").foregroundColor(.white.opacity(0.6)))
+                                .foregroundColor(.white)
+                                .tint(Color.white.opacity(0.85))
+                                .textContentType(.password)
+                                .autocapitalization(.none)
+                                .textInputAutocapitalization(.never)
+                                .disableAutocorrection(true)
+                        }
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Sync ID")
+                                .font(AppTheme.Fonts.subheadline)
+                                .foregroundColor(.white.opacity(0.8))
+                            TextField("", text: $syncId, prompt: Text("Your Sync ID").foregroundColor(.white.opacity(0.6)))
+                                .foregroundColor(.white)
+                                .tint(Color.white.opacity(0.85))
+                                .autocapitalization(.none)
+                                .textInputAutocapitalization(.never)
+                                .disableAutocorrection(true)
+                        }
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Budget Encryption Password (optional)")
+                                .font(AppTheme.Fonts.subheadline)
+                                .foregroundColor(.white.opacity(0.8))
+                            SecureField("", text: $password, prompt: Text("Password (if set)").foregroundColor(.white.opacity(0.6)))
+                                .foregroundColor(.white)
+                                .tint(Color.white.opacity(0.85))
+                        }
                     }
                     .textFieldStyle(GlassTextFieldStyle())
                 }
@@ -41,13 +76,23 @@ struct OnboardingView: View {
                     Text("Continue")
                         .font(AppTheme.Fonts.headline)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(AppTheme.accent)
-                        .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-                        .foregroundColor(.white)
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(AppTheme.accent)
                 .disabled(!isValid)
                 .padding(.horizontal)
+                
+                Button(action: useDemo) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "play.circle")
+                        Text("Use Demo Mode")
+                    }
+                    .font(AppTheme.Fonts.subheadline)
+                    .foregroundColor(.white.opacity(0.9))
+                    .padding(.vertical, 4)
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 4)
                 
                 Spacer()
             }
@@ -68,5 +113,9 @@ struct OnboardingView: View {
         appState.apiKey = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
         appState.syncId = syncId.trimmingCharacters(in: .whitespacesAndNewlines)
         appState.budgetEncryptionPassword = password
+    }
+
+    private func useDemo() {
+        appState.isDemoMode = true
     }
 }

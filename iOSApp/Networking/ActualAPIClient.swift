@@ -10,11 +10,15 @@ final class ActualAPIClient {
 
     init(baseURLString: String, apiKey: String, syncId: String, budgetEncryptionPassword: String?, isDemoMode: Bool = false) throws {
         self.session = URLSession(configuration: .default)
-        self.baseURL = try APIEndpoints.baseURL(from: baseURLString)
+        self.isDemoMode = isDemoMode
+        if isDemoMode {
+            self.baseURL = URL(string: "https://demo.local")!
+        } else {
+            self.baseURL = try APIEndpoints.baseURL(from: baseURLString)
+        }
         self.apiKey = apiKey
         self.syncId = syncId
         self.budgetEncryptionPassword = budgetEncryptionPassword?.isEmpty == true ? nil : budgetEncryptionPassword
-        self.isDemoMode = isDemoMode
     }
 
 
@@ -63,6 +67,7 @@ final class ActualAPIClient {
     }
 
     func createTransaction(accountId: String, transaction: Transaction, learnCategories: Bool = false, runTransfers: Bool = false) async throws {
+        if isDemoMode { return }
         let url = APIEndpoints.accountTransactions(base: baseURL, syncId: syncId, accountId: accountId, since: nil, until: nil, page: nil, limit: nil).url!
         var request = try buildRequest(url: url, method: "POST")
         var body: [String: Any] = [
@@ -76,6 +81,7 @@ final class ActualAPIClient {
     }
 
     func updateTransaction(transactionId: String, transaction: Transaction) async throws {
+        if isDemoMode { return }
         let url = APIEndpoints.transaction(base: baseURL, syncId: syncId, transactionId: transactionId)
         var request = try buildRequest(url: url, method: "PATCH")
         request.httpBody = try JSONSerialization.data(withJSONObject: ["transaction": serialize(transaction)])
@@ -84,6 +90,7 @@ final class ActualAPIClient {
     }
 
     func deleteTransaction(transactionId: String) async throws {
+        if isDemoMode { return }
         let url = APIEndpoints.transaction(base: baseURL, syncId: syncId, transactionId: transactionId)
         let request = try buildRequest(url: url, method: "DELETE")
         let (data, response) = try await session.data(for: request)
@@ -154,6 +161,7 @@ final class ActualAPIClient {
     }
 
     func bankSync(accountId: String?) async throws {
+        if isDemoMode { return }
         let url: URL
         if let accountId {
             url = APIEndpoints.accountBankSync(base: baseURL, syncId: syncId, accountId: accountId)
