@@ -4,8 +4,8 @@ import Combine
 final class AppState: ObservableObject {
     // --- NEW: Theme Management ---
     enum Theme: String, CaseIterable, Identifiable {
-        case liquidDark = "Liquid Dark"
-        case amoledDark = "AMOLED Dark"
+        case Dark = "Dark"
+        case amoledDark = "Dark (AMOLED)"
         case systemLight = "System Light"
         var id: String { self.rawValue }
     }
@@ -45,7 +45,7 @@ final class AppState: ObservableObject {
         self.currencyCode = UserDefaults.standard.string(forKey: Keys.currencyCode) ?? Locale.current.currency?.identifier ?? "USD"
         
         let savedTheme = UserDefaults.standard.string(forKey: Keys.currentTheme) ?? ""
-        self.currentTheme = Theme(rawValue: savedTheme) ?? .liquidDark
+        self.currentTheme = Theme(rawValue: savedTheme) ?? .amoledDark
     }
 
     func resetConfiguration() {

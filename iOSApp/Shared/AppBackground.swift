@@ -5,7 +5,7 @@ struct AppBackground: View {
     
     var body: some View {
         switch appState.currentTheme {
-        case .liquidDark:
+        case .Dark:
             LiquidBackground()
         case .amoledDark:
             Color.black.ignoresSafeArea()

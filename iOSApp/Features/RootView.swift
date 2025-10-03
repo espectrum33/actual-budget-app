@@ -9,7 +9,7 @@ struct MainTabView: View {
     // A computed property to determine the color scheme
     private var colorScheme: ColorScheme? {
         switch appState.currentTheme {
-        case .liquidDark, .amoledDark:
+        case .Dark, .amoledDark:
             return .dark
         case .systemLight:
             return .light

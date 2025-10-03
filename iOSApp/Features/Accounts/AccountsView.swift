@@ -26,6 +26,19 @@ struct AccountsView: View {
             AppBackground()
             ScrollView {
                 VStack(spacing: 24) {
+                    GlassCard(cornerRadius: 15) {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("Total Balance")
+                                    .font(AppTheme.Fonts.title)
+                                    .foregroundColor(.primary)
+                            }
+                            Spacer()
+                            Text(formattedAmount(totalAll()))
+                                .font(AppTheme.Fonts.body.monospacedDigit())
+                                .foregroundColor(.primary)
+                        }
+                    }
                     if !onBudget.isEmpty {
                         accountSection(title: "On-Budget", accounts: onBudget)
                     }
@@ -63,10 +76,16 @@ struct AccountsView: View {
 
     private func accountSection(title: String, accounts: [Account]) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(title)
-                .font(AppTheme.Fonts.title)
-                .foregroundColor(.primary)
-                .padding(.horizontal)
+            HStack {
+                Text(title)
+                    .font(AppTheme.Fonts.title)
+                    .foregroundColor(.primary)
+                Spacer()
+                Text(formattedAmount(totalFor(accounts: accounts)))
+                    .font(AppTheme.Fonts.body.monospacedDigit())
+                    .foregroundColor(.primary)
+            }
+            .padding(.horizontal)
 
             ForEach(accounts) { account in
                 NavigationLink(destination: TransactionsView(account: account)) {
@@ -115,6 +134,11 @@ struct AccountsView: View {
                 self.accounts = list
                 if clearBalances { self.balancesById.removeAll() }
             }
+            await withTaskGroup(of: Void.self) { group in
+                for acc in list {
+                    group.addTask { await self.loadBalanceIfNeeded(acc) }
+                }
+            }
         } catch {
             await MainActor.run { errorMessage = error.localizedDescription }
         }
@@ -131,20 +155,42 @@ struct AccountsView: View {
     }
 
     private func fetchBalance(accountId: String) async throws -> Int {
-        let url = APIEndpoints.accountBalance(base: try APIEndpoints.baseURL(from: appState.baseURLString), syncId: appState.syncId, accountId: accountId)
-        var req = URLRequest(url: url)
-        req.httpMethod = "GET"
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(appState.apiKey, forHTTPHeaderField: "x-api-key")
-        if !appState.budgetEncryptionPassword.isEmpty { req.setValue(appState.budgetEncryptionPassword, forHTTPHeaderField: "budget-encryption-password") }
-        let (data, resp) = try await URLSession.shared.data(for: req)
-        guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { throw URLError(.badServerResponse) }
-        let decoded = try JSONDecoder().decode(APIResponse<Int>.self, from: data)
-        return decoded.data
+        if appState.isDemoMode {
+            // Compute a fake balance by summing generated demo transactions
+            let since = demoSinceDateString(daysBack: 120)
+            let txs = DemoDataService.shared.generateTransactions(for: accountId, since: since)
+            return txs.compactMap { $0.amount }.reduce(0, +)
+        } else {
+            let url = APIEndpoints.accountBalance(base: try APIEndpoints.baseURL(from: appState.baseURLString), syncId: appState.syncId, accountId: accountId)
+            var req = URLRequest(url: url)
+            req.httpMethod = "GET"
+            req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            req.setValue(appState.apiKey, forHTTPHeaderField: "x-api-key")
+            if !appState.budgetEncryptionPassword.isEmpty { req.setValue(appState.budgetEncryptionPassword, forHTTPHeaderField: "budget-encryption-password") }
+            let (data, resp) = try await URLSession.shared.data(for: req)
+            guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { throw URLError(.badServerResponse) }
+            let decoded = try JSONDecoder().decode(APIResponse<Int>.self, from: data)
+            return decoded.data
+        }
     }
 
     private func formattedAmount(_ amount: Int?) -> String {
         return CurrencyFormatter.shared.format(amount ?? 0, currencyCode: appState.currencyCode)
+    }
+
+    private func demoSinceDateString(daysBack: Int) -> String {
+        let date = Calendar.current.date(byAdding: .day, value: -daysBack, to: Date()) ?? Date()
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: date)
+    }
+
+    private func totalFor(accounts: [Account]) -> Int {
+        accounts.map { balancesById[$0.id] ?? 0 }.reduce(0, +)
+    }
+
+    private func totalAll() -> Int {
+        totalFor(accounts: self.accounts)
     }
 
     private func createAccount(name: String, offbudget: Bool) async {

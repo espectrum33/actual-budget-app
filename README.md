@@ -16,6 +16,39 @@ A modern, native iOS app for managing your personal finances with the Actual Bud
 - **Sample Data**: Test the app with realistic demo data
 - **Toggle On/Off**: Switch between demo and real data seamlessly
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="Screenshots/dashboard.png" alt="Dashboard" width="220" />
+      <div><sub>Dashboard</sub></div>
+    </td>
+    <td align="center">
+      <img src="Screenshots/accounts.png" alt="Accounts" width="220" />
+      <div><sub>Accounts</sub></div>
+    </td>
+    <td align="center">
+      <img src="Screenshots/all_transactions.png" alt="All Transactions" width="220" />
+      <div><sub>All Transactions</sub></div>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="Screenshots/account_transactions.png" alt="Account Transactions" width="220" />
+      <div><sub>Account Transactions</sub></div>
+    </td>
+    <td align="center">
+      <img src="Screenshots/new_transaction.png" alt="New Transaction" width="220" />
+      <div><sub>New Transaction</sub></div>
+    </td>
+    <td align="center">
+      <img src="Screenshots/budget.png" alt="Budget" width="220" />
+      <div><sub>Budget</sub></div>
+    </td>
+  </tr>
+</table>
+
 ## Installation
 
 ### Prerequisites
