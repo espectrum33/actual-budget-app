@@ -1,6 +1,5 @@
 # Actual Accounts iOS App
 
-> ⚠️ **Note**: The Makefile in this repository is currently broken and not functional. Please use Xcode directly to build and run the app.
 
 A modern, native iOS app for managing your personal finances with the Actual Budget backend. Built with SwiftUI and designed for a clean, intuitive user experience.
 
@@ -65,7 +64,7 @@ A modern, native iOS app for managing your personal finances with the Actual Bud
    - Launch the app
    - Go to Settings (via Accounts → gear icon)
    - Enter your Actual Budget credentials:
-     - Base URL (e.g., `https://your-actual-server.com`)
+     - Base URL (e.g., `https://your-actual-http-server.com/v1`)
      - API Key
      - Sync ID
      - Budget Encryption Password (optional)
@@ -87,9 +86,11 @@ The app integrates with the Actual Budget API to provide real-time financial dat
 ## Development
 
 ### Building the App
-1. Open `iOSApp/ActualAccounts.xcodeproj` in Xcode
-2. Select your target device or simulator
-3. Build and run (⌘+R)
+
+1. Open a terminal and run `make` in the project root directory. This will build the iOS app and generate an unsigned `.ipa` file.
+2. After the build completes, you can find the unsigned IPA at `iOSApp/build/ActualAccounts-unsigned.ipa`.
+
+
 
 ## Contributing
 

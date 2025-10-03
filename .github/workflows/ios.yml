@@ -1,0 +1,124 @@
+name: iOS Build & Release
+
+on:
+  pull_request:
+    branches: [ main, dev ]
+  push:
+    branches: [ main, dev ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (PR)
+    if: github.event_name == 'pull_request'
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          brew update
+          brew install xcodegen || true
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build unsigned IPA
+        run: |
+          make
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ActualAccounts-unsigned-PR
+          path: |
+            ActualAccounts.ipa
+            iOSApp/build/ActualAccounts-unsigned.ipa
+
+  prerelease:
+    name: Pre-Release (dev)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          brew update
+          brew install xcodegen || true
+
+      - name: Read versions from xcconfig
+        id: versions
+        run: |
+          MV=$(sed -n 's/^MARKETING_VERSION = \(.*\)$/\1/p' iOSApp/Resources/Version.xcconfig | tr -d '\r' | tail -n1)
+          BV=$(sed -n 's/^CURRENT_PROJECT_VERSION = \(.*\)$/\1/p' iOSApp/Resources/Version.xcconfig | tr -d '\r' | tail -n1)
+          echo "marketing_version=$MV" >> $GITHUB_OUTPUT
+          echo "build_number=$BV" >> $GITHUB_OUTPUT
+
+      - name: Show versions
+        run: |
+          echo "MARKETING_VERSION=${{ steps.versions.outputs.marketing_version }}"
+          echo "CURRENT_PROJECT_VERSION=${{ steps.versions.outputs.build_number }}"
+
+      - name: Build unsigned IPA
+        run: |
+          make
+
+      - name: Create/Update prerelease
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.versions.outputs.marketing_version }}-dev-${{ github.run_number }}
+          name: v${{ steps.versions.outputs.marketing_version }} (dev build ${{ github.run_number }})
+          prerelease: true
+          files: |
+            ActualAccounts.ipa
+            iOSApp/build/ActualAccounts-unsigned.ipa
+          generate_release_notes: true
+          make_latest: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    name: Release (main)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          brew update
+          brew install xcodegen || true
+
+      - name: Read versions from xcconfig
+        id: versions
+        run: |
+          MV=$(sed -n 's/^MARKETING_VERSION = \(.*\)$/\1/p' iOSApp/Resources/Version.xcconfig | tr -d '\r' | tail -n1)
+          BV=$(sed -n 's/^CURRENT_PROJECT_VERSION = \(.*\)$/\1/p' iOSApp/Resources/Version.xcconfig | tr -d '\r' | tail -n1)
+          echo "marketing_version=$MV" >> $GITHUB_OUTPUT
+          echo "build_number=$BV" >> $GITHUB_OUTPUT
+
+      - name: Build unsigned IPA
+        run: |
+          make
+
+      - name: Create/Update release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.versions.outputs.marketing_version }}
+          name: v${{ steps.versions.outputs.marketing_version }} (build ${{ steps.versions.outputs.build_number }})
+          prerelease: false
+          files: |
+            ActualAccounts.ipa
+            iOSApp/build/ActualAccounts-unsigned.ipa
+          generate_release_notes: true
+          make_latest: true
+          fail_on_unmatched_files: true
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

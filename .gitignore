@@ -1,3 +1,5 @@
 *.ipa
 *.xcarchive
 *.log
+iOSApp/build
+iOSApp/ActualAccounts.xcodeproj

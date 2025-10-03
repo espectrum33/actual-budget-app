@@ -8,19 +8,21 @@ PROJECT_DIR = iOSApp
 PROJECT_FILE = $(PROJECT_DIR)/$(PROJECT_NAME).xcodeproj
 
 BUILD_DIR = $(PROJECT_DIR)/build
-ARCHIVE_PATH = $(BUILD_DIR)/$(PROJECT_NAME).xcarchive
+PRODUCTS_DIR = $(BUILD_DIR)/Build/Products/Release-iphoneos
 FINAL_IPA = $(PROJECT_NAME).ipa
 
 PAYLOAD_DIR = $(BUILD_DIR)/Payload
-APP_BUNDLE = $(ARCHIVE_PATH)/Products/Applications/$(PROJECT_NAME).app
+APP_BUNDLE = $(PRODUCTS_DIR)/$(PROJECT_NAME).app
 UNSIGNED_IPA_NAME = $(PROJECT_NAME)-unsigned.ipa
 UNSIGNED_IPA_PATH = $(BUILD_DIR)/$(UNSIGNED_IPA_NAME)
 DEVELOPER_DIR = /Applications/Xcode.app/Contents/Developer
 XCODEBUILD = DEVELOPER_DIR=$(DEVELOPER_DIR) xcodebuild
 
-# --- Self-Signing Certificate Config ---
-# The certificate name, without quotes here
-CERT_NAME=iPhone Developer: Local Build
+# --- Code Signing Control (disabled for unsigned build) ---
+CODE_SIGNING_ALLOWED = NO
+CODE_SIGNING_REQUIRED = NO
+CODE_SIGN_IDENTITY =
+PROVISIONING_PROFILE_SPECIFIER =
 
 # --- Main Targets ---
 
@@ -29,19 +31,24 @@ all: ios-unsigned
 
 .PHONY: ios-unsigned
 ios-unsigned: clean project
-	@echo "\n--- Step 1: Creating Self-Signed Certificate ---"
-	
-	@echo "\n--- Step 2: Archiving with Self-Signed Certificate ---"
+	@echo "\n--- Step 1: Building without code signing ---"
 	@$(XCODEBUILD) -project $(PROJECT_FILE) \
 		-scheme $(SCHEME) \
 		-configuration Release \
 		-destination generic/platform=iOS \
-		-archivePath $(ARCHIVE_PATH) \
-		CODE_SIGN_IDENTITY="$(CERT_NAME)" \
-		OTHER_CODE_SIGN_FLAGS="--keychain $(KEYCHAIN_NAME)" \
-		archive
-	@test -d "$(APP_BUNDLE)" || (echo "❌ Archive failed." && make cleanup-keychain && exit 1)
-	@echo "✅ Archive complete: $(ARCHIVE_PATH)"
+		-derivedDataPath $(BUILD_DIR) \
+		CODE_SIGNING_ALLOWED=$(CODE_SIGNING_ALLOWED) \
+		CODE_SIGNING_REQUIRED=$(CODE_SIGNING_REQUIRED) \
+		CODE_SIGN_IDENTITY="$(CODE_SIGN_IDENTITY)" \
+		PROVISIONING_PROFILE_SPECIFIER="$(PROVISIONING_PROFILE_SPECIFIER)" \
+		build
+	@test -d "$(APP_BUNDLE)" || (echo "❌ Build failed. App bundle not found at '$(APP_BUNDLE)'." && exit 1)
+	@echo "✅ Build complete: $(APP_BUNDLE)"
+
+	@echo "\n--- Step 2: Removing existing signature and provisioning profile ---"
+	@rm -rf "$(APP_BUNDLE)/_CodeSignature" || true
+	@rm -f "$(APP_BUNDLE)/embedded.mobileprovision" || true
+	@codesign --remove-signature "$(APP_BUNDLE)/$(PROJECT_NAME)" 2>/dev/null || true
 
 	@echo "\n--- Step 3: Packaging Unsigned IPA ---"
 	@rm -rf $(PAYLOAD_DIR)
@@ -52,16 +59,8 @@ ios-unsigned: clean project
 	@cp $(UNSIGNED_IPA_PATH) ./$(FINAL_IPA)
 	@echo "✅ Build complete: $(FINAL_IPA)"
 	@ls -lh $(FINAL_IPA)
-	
-	@make cleanup-keychain
 
 # --- Utility Targets ---
-
-.PHONY: cleanup-keychain
-cleanup-keychain:
-	@echo "\n--- Step 4: Cleaning Up Temporary Keychain ---"
-	@security delete-keychain $(KEYCHAIN_NAME) || echo "🔑 Keychain already deleted or never created."
-	@echo "✅ Cleanup complete."
 
 .PHONY: clean
 clean:
