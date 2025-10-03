@@ -24,6 +24,9 @@ CODE_SIGNING_REQUIRED = NO
 CODE_SIGN_IDENTITY =
 PROVISIONING_PROFILE_SPECIFIER =
 
+# --- Extensibility: allow CI or callers to pass additional xcodebuild flags ---
+EXTRA_XCODEBUILD_FLAGS ?=
+
 # --- Main Targets ---
 
 .PHONY: all
@@ -41,6 +44,7 @@ ios-unsigned: clean project
 		CODE_SIGNING_REQUIRED=$(CODE_SIGNING_REQUIRED) \
 		CODE_SIGN_IDENTITY="$(CODE_SIGN_IDENTITY)" \
 		PROVISIONING_PROFILE_SPECIFIER="$(PROVISIONING_PROFILE_SPECIFIER)" \
+		$(EXTRA_XCODEBUILD_FLAGS) \
 		build
 	@test -d "$(APP_BUNDLE)" || (echo "❌ Build failed. App bundle not found at '$(APP_BUNDLE)'." && exit 1)
 	@echo "✅ Build complete: $(APP_BUNDLE)"
