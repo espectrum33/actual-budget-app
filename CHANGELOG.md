@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning for tagged releases.
 
-### [1.0.2]
+ ### [1.1.0]
 - Updated the app logo.
 - Added in‑app logging and sharing:
   - View and share logs from Settings → View Logs.
