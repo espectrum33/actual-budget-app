@@ -63,6 +63,11 @@ struct AccountsView: View {
         .refreshable { await hardReload() }
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
             Button("OK") { errorMessage = nil }
+            Button("View Logs") {
+                AppLogger.shared.log("User tapped View Logs from Accounts error", level: .info, context: "AccountsView")
+                errorMessage = nil
+                NotificationCenter.default.post(name: NSNotification.Name("OpenLogsView"), object: nil)
+            }
         } message: {
             Text(errorMessage ?? "")
         }
@@ -140,6 +145,7 @@ struct AccountsView: View {
                 }
             }
         } catch {
+            AppLogger.shared.log(error: error, context: "AccountsView.load")
             await MainActor.run { errorMessage = error.localizedDescription }
         }
     }
@@ -168,7 +174,10 @@ struct AccountsView: View {
             req.setValue(appState.apiKey, forHTTPHeaderField: "x-api-key")
             if !appState.budgetEncryptionPassword.isEmpty { req.setValue(appState.budgetEncryptionPassword, forHTTPHeaderField: "budget-encryption-password") }
             let (data, resp) = try await URLSession.shared.data(for: req)
-            guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { throw URLError(.badServerResponse) }
+            if let http = resp as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+                NetworkLogger.logHTTPError(method: "GET", url: url, baseURLString: appState.baseURLString, status: http.statusCode, body: data)
+                throw URLError(.badServerResponse)
+            }
             let decoded = try JSONDecoder().decode(APIResponse<Int>.self, from: data)
             return decoded.data
         }

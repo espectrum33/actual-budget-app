@@ -11,42 +11,99 @@ struct DashboardView: View {
     @State private var activeSheet: SheetType?
 
     var onBudgetAccounts: [Account] { accounts.filter { !$0.offbudget } }
+    private var recentFive: [Transaction] { recentNonTransferOnBudget().prefix(5).map { $0 } }
 
     var body: some View {
         ZStack {
             AppBackground()
-            ScrollView {
-                VStack(spacing: 24) {
-                    Text("Overview")
-                        .font(AppTheme.Fonts.largeTitle)
-                        .foregroundColor(.primary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top)
+            List {
+                Section {
+                    VStack(spacing: 24) {
+                        Text("Overview")
+                            .font(AppTheme.Fonts.largeTitle)
+                            .foregroundColor(.primary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top)
 
-                    GlassCard {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Spent This Month")
+                        GlassCard {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Spent This Month")
+                                    .font(AppTheme.Fonts.body)
+                                    .foregroundStyle(.secondary)
+                                Text(formatMoney(spentThisMonth()))
+                                    .font(AppTheme.Fonts.title)
+                                    .foregroundColor(.primary)
+                                    .monospacedDigit()
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 16) {
+                                metricCard(title: "Spent Today", value: spentToday())
+                                metricCard(title: "Spent Last Month", value: spentLastMonth())
+                                metricCard(title: "On-budget Accounts", value: onBudgetAccounts.count, isMoney: false)
+                            }
+                        }
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
+                Section(header:
+                    HStack {
+                        Text("Recent Activity")
+                            .font(AppTheme.Fonts.title)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        NavigationLink("View All") { AllTransactionsView() }
+                            .foregroundColor(AppTheme.accent)
+                    }
+                ) {
+                    if recentFive.isEmpty {
+                        GlassCard {
+                            Text("No recent transactions to show.")
                                 .font(AppTheme.Fonts.body)
                                 .foregroundStyle(.secondary)
-                            Text(formatMoney(spentThisMonth()))
-                                .font(AppTheme.Fonts.title)
-                                .foregroundColor(.primary)
-                                .monospacedDigit()
+                                .frame(maxWidth: .infinity, minHeight: 100)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
-                            metricCard(title: "Spent Today", value: spentToday())
-                            metricCard(title: "Spent Last Month", value: spentLastMonth())
-                            metricCard(title: "On-budget Accounts", value: onBudgetAccounts.count, isMoney: false)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                    } else {
+                        ForEach(recentFive, id: \.id) { tx in
+                            TransactionRow(
+                                transaction: tx,
+                                accounts: accounts,
+                                payeesById: payeesById,
+                                categoriesById: categoriesById,
+                                currencyCode: appState.currencyCode,
+                                onEdit: { t in activeSheet = .edit(t) },
+                                onDelete: { t in Task { await delete(t) } }
+                            )
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                         }
                     }
-                    recentTransactionsSection
+                    Button {
+                        activeSheet = .add
+                    } label: {
+                        HStack {
+                            Image(systemName: "plus")
+                            Text("Add Transaction")
+                        }
+                        .font(AppTheme.Fonts.headline)
+                        .foregroundColor(AppTheme.accent)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                 }
-                .padding()
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
         }
         .navigationBarHidden(true)
         .task { await load() }
@@ -60,6 +117,11 @@ struct DashboardView: View {
         }
         .alert("Error", isPresented: .constant(errorMessage != nil), actions: {
             Button("OK") { errorMessage = nil }
+            Button("View Logs") {
+                AppLogger.shared.log("User tapped View Logs from Dashboard error", level: .info, context: "DashboardView")
+                errorMessage = nil
+                NotificationCenter.default.post(name: NSNotification.Name("OpenLogsView"), object: nil)
+            }
         }, message: {
             Text(errorMessage ?? "An unknown error occurred.")
         })
@@ -88,10 +150,15 @@ struct DashboardView: View {
             } else {
                 VStack(spacing: 12) {
                     ForEach(recent, id: \.id) { tx in
-                        transactionRow(tx)
-                            .onTapGesture {
-                                activeSheet = .edit(tx)
-                            }
+                        TransactionRow(
+                            transaction: tx,
+                            accounts: accounts,
+                            payeesById: payeesById,
+                            categoriesById: categoriesById,
+                            currencyCode: appState.currencyCode,
+                            onEdit: { t in activeSheet = .edit(t) },
+                            onDelete: { t in Task { await delete(t) } }
+                        )
                     }
                 }
             }
@@ -184,6 +251,7 @@ struct DashboardView: View {
                 transactions = txs.flatMap { $0 }
             }
         } catch {
+            AppLogger.shared.log(error: error, context: "DashboardView.load")
             await MainActor.run { errorMessage = error.localizedDescription }
         }
     }
@@ -254,5 +322,19 @@ struct DashboardView: View {
         if let payeeId = tx.payee, let p = payeesById[payeeId] { return p.name }
         if let n = tx.payee_name, !n.isEmpty { return n }
         return "(No payee)"
+    }
+
+    private func delete(_ tx: Transaction) async {
+        guard let txId = tx.id else { return }
+        // Optimistically remove from local list
+        await MainActor.run {
+            transactions.removeAll { $0.id == txId }
+        }
+        do {
+            try await client().deleteTransaction(transactionId: txId)
+        } catch {
+            AppLogger.shared.log(error: error, context: "DashboardView.delete")
+            await MainActor.run { errorMessage = error.localizedDescription }
+        }
     }
 }

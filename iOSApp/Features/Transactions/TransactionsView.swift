@@ -20,16 +20,16 @@ struct TransactionsView: View {
             AppBackground()
             List {
                 ForEach(sortedTransactions, id: \.id) { tx in
-                    transactionRow(tx)
-                        .onTapGesture {
-                            activeSheet = .edit(tx)
-                        }
-                        .contextMenu { contextMenuItems(for: tx) }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                Task { await delete(tx) }
-                            } label: { Label("Delete", systemImage: "trash") }
-                        }
+                    TransactionRow(
+                        transaction: tx,
+                        accounts: accounts,
+                        payeesById: payeesById,
+                        categoriesById: categoriesById,
+                        currencyCode: appState.currencyCode,
+                        onEdit: { t in activeSheet = .edit(t) },
+                        onDelete: { t in Task { await delete(t) } }
+                    )
+                    .contextMenu { contextMenuItems(for: tx) }
                 }
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
@@ -57,6 +57,11 @@ struct TransactionsView: View {
         }
         .alert("Error", isPresented: .constant(errorMessage != nil)) {
             Button("OK") { errorMessage = nil }
+            Button("View Logs") {
+                AppLogger.shared.log("User tapped View Logs from Transactions error", level: .info, context: "TransactionsView")
+                errorMessage = nil
+                NotificationCenter.default.post(name: NSNotification.Name("OpenLogsView"), object: nil)
+            }
         } message: { Text(errorMessage ?? "") }
     }
     
@@ -115,6 +120,7 @@ struct TransactionsView: View {
             try await client().deleteTransaction(transactionId: txId)
             await loadAll()
         } catch {
+            AppLogger.shared.log(error: error, context: "TransactionsView.delete")
             await MainActor.run { errorMessage = error.localizedDescription }
         }
     }
@@ -146,6 +152,7 @@ struct TransactionsView: View {
                 transactions = list
             }
         } catch {
+            AppLogger.shared.log(error: error, context: "TransactionsView.loadAll")
             await MainActor.run { errorMessage = error.localizedDescription }
         }
     }
