@@ -13,6 +13,7 @@ import EventsPage from "./pages/EventsPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/BlogPage";
+import BlogArticlePage from "./pages/BlogArticlePage";
 import NotFound from "./pages/NotFound";
 import MaintenancePage from "./pages/MaintenancePage";
 
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/testimonios" element={<TestimonialsPage />} />
             <Route path="/contacto" element={<ContactPage />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogArticlePage />} />
             <Route path="/maintenance" element={<MaintenancePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -61,123 +61,149 @@ const BlogPage = () => {
   const featuredPosts: BlogPost[] = [
     {
       id: 1,
-      title: "Los mejores trucos de magia para sorprender a los niños",
-      excerpt: "Descubre los trucos de magia más impresionantes y fáciles de aprender para entretener a los niños en cualquier evento.",
-      content: "Contenido completo del artículo...",
-      date: "2025-05-01",
-      image: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?q=80&w=2070&auto=format&fit=crop",
+      title: "5 Trucos de Magia Sorprendentes para Fiestas Infantiles",
+      excerpt: "Aprende estos 5 trucos de magia fáciles pero impactantes que harán que los niños queden maravillados en cualquier celebración o evento infantil.",
+      content: "Los shows de magia son uno de los elementos más populares en las fiestas infantiles, capaces de crear momentos de asombro y diversión que los niños recordarán por mucho tiempo. En este artículo, te enseñamos cinco trucos de magia sencillos pero impactantes que puedes incorporar en tu próximo evento infantil. Desde la clásica moneda que desaparece hasta efectos visuales con cartas especialmente diseñadas para audiencias infantiles, estos trucos garantizan risas y aplausos. Lo mejor es que no necesitas ser un mago profesional para realizarlos, solo seguir nuestras instrucciones paso a paso y practicar un poco antes del gran día.",
+      date: "2023-11-15",
+      image: "/lovable-uploads/eventos-magia-infantil-1.avif",
       category: "magia",
-      author: "Carlos Mágico",
-      authorImage: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=2070&auto=format&fit=crop",
-      tags: ["magia", "niños", "eventos"],
+      author: "Carlos Martínez",
+      authorImage: "/lovable-uploads/13ad09_c294a5a971414b109cc39b664b06c7c1.avif",
+      tags: ["magia infantil", "trucos para niños", "animación de fiestas", "shows infantiles"],
       readTime: 5
     },
     {
       id: 2,
-      title: "Tendencias en decoración para fiestas infantiles en 2025",
-      excerpt: "Las últimas tendencias en decoración que harán que tu fiesta sea inolvidable para los más pequeños.",
-      content: "Contenido completo del artículo...",
-      date: "2025-04-28",
-      image: "https://images.unsplash.com/photo-1524117074681-31bd4de22ad3?q=80&w=2070&auto=format&fit=crop",
+      title: "Decoración Temática: Cómo Crear Ambientes Mágicos para Fiestas Infantiles",
+      excerpt: "Descubre las últimas tendencias en decoración temática y cómo transformar cualquier espacio en un mundo de fantasía para la fiesta perfecta.",
+      content: "La decoración temática es el elemento que transforma una simple reunión en una experiencia inmersiva y mágica para los niños. En este artículo, exploramos las tendencias más populares en decoración para fiestas infantiles, desde los clásicos temas de superhéroes y princesas hasta conceptos más originales como expediciones espaciales o aventuras submarinas. Analizamos cómo utilizar elementos decorativos clave como backdrops personalizados, centros de mesa creativos, y efectos de iluminación para crear ambientes envolventes. También compartimos consejos prácticos para adaptar cualquier presupuesto a una decoración impactante, aprovechando recursos DIY y elementos reutilizables que maximizan el impacto visual sin comprometer la calidad.",
+      date: "2023-10-28",
+      image: "/lovable-uploads/fiesta-tematica-5.avif",
       category: "tendencias",
-      author: "Laura Diseñadora",
-      authorImage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2076&auto=format&fit=crop",
-      tags: ["decoración", "fiestas", "tendencias"],
+      author: "Laura Gómez",
+      authorImage: "/lovable-uploads/13ad09_bbd20cdc1738855a64b9862b44be022c.avif",
+      tags: ["decoración infantil", "fiestas temáticas", "tendencias en eventos", "ambientación"],
       readTime: 7
     },
     {
       id: 3,
-      title: "Cómo mantener entretenidos a los niños durante un evento largo",
-      excerpt: "Consejos prácticos para que los niños no se aburran durante eventos que pueden resultar largos para ellos.",
-      content: "Contenido completo del artículo...",
-      date: "2025-04-15",
-      image: "https://images.unsplash.com/photo-1576404425726-000c751eecda?q=80&w=1974&auto=format&fit=crop",
+      title: "Juegos Interactivos que Mantienen a los Niños Entretenidos Durante Todo el Evento",
+      excerpt: "Estrategias probadas y juegos dinámicos para mantener a los pequeños invitados completamente entretenidos durante celebraciones largas.",
+      content: "Mantener a los niños entretenidos durante todo un evento puede ser un desafío, especialmente cuando la celebración se extiende por varias horas. En este artículo, presentamos una selección de juegos interactivos y dinámicas grupales diseñadas específicamente para captar la atención de los más pequeños y evitar momentos de aburrimiento. Desde circuitos de actividades rotativas hasta concursos temáticos adaptados a diferentes edades, estas propuestas garantizan la participación activa de todos los invitados. Además, incluimos recomendaciones sobre cómo estructurar los tiempos de juego, alternando momentos de alta energía con actividades más tranquilas, y cómo adaptar las dinámicas según el espacio disponible y la cantidad de participantes.",
+      date: "2023-10-15",
+      image: "/lovable-uploads/actividades-recreativas-4.avif",
       category: "consejos",
-      author: "María Educadora",
-      authorImage: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop",
-      tags: ["niños", "eventos", "entretenimiento"],
+      author: "María Rodríguez",
+      authorImage: "/lovable-uploads/13ad09_8a164a297289401d88029134e418a87c.avif",
+      tags: ["juegos infantiles", "animación de eventos", "actividades para niños", "entretenimiento infantil"],
       readTime: 6
     }
   ];
 
   const blogPosts: BlogPost[] = [
     {
+      id: 10,
+      title: "Animadores Infantiles: Cómo Elegir al Profesional Perfecto para tu Evento",
+      excerpt: "Guía completa con los criterios esenciales para seleccionar al animador que garantizará el éxito de tu celebración infantil.",
+      content: "Contratar al animador adecuado puede marcar la diferencia entre una fiesta ordinaria y una experiencia extraordinaria para los niños. Este artículo presenta los criterios fundamentales que debes considerar al seleccionar un profesional de la animación infantil, desde su experiencia y especialización hasta su capacidad para adaptarse a diferentes públicos y situaciones imprevistas. Analizamos la importancia de verificar referencias, revisar material audiovisual de eventos anteriores y mantener entrevistas previas para evaluar la conexión del animador con el perfil de los asistentes. También ofrecemos una lista de preguntas clave que debes hacer antes de contratar, relacionadas con el contenido del espectáculo, necesidades técnicas, política de cancelaciones y otros aspectos logísticos importantes. Complementamos esta información con testimonios de padres y organizadores sobre los beneficios de contar con animación profesional frente a soluciones improvisadas.",
+      date: "2023-07-25",
+      image: "/lovable-uploads/13ad09_462c6c457c8f52fdfa7e458aa26d30e3.avif",
+      category: "eventos",
+      author: "Javier Torres",
+      authorImage: "/lovable-uploads/13ad09_f6109295874f456fa43ff9745c07abbf.avif",
+      tags: ["animadores profesionales", "contratación de servicios", "shows infantiles", "organización de eventos"],
+      readTime: 7
+    },
+    {
+      id: 11,
+      title: "Magia Educativa: Cómo los Trucos de Ilusionismo Potencian el Aprendizaje Infantil",
+      excerpt: "Descubre cómo la magia puede convertirse en una poderosa herramienta pedagógica que estimula múltiples habilidades cognitivas y sociales en los niños.",
+      content: "La magia va mucho más allá del entretenimiento cuando se aplica con objetivos educativos. Este artículo explora el concepto de 'magia educativa', una metodología innovadora que utiliza trucos e ilusiones como vehículo para el aprendizaje significativo. Analizamos los beneficios cognitivos que aporta la magia, como el desarrollo del pensamiento crítico, la mejora de la concentración, el estímulo de la creatividad y el refuerzo de habilidades matemáticas y científicas. También abordamos su impacto positivo en aspectos socioemocionales, ayudando a niños tímidos a ganar confianza, fomentando el trabajo en equipo y enseñando valores como la perseverancia. Presentamos ejemplos prácticos de trucos sencillos vinculados a diferentes áreas curriculares, desde matemáticas y física hasta literatura e historia, que padres y educadores pueden implementar tanto en entornos festivos como académicos.",
+      date: "2023-07-10",
+      image: "/lovable-uploads/Magia-y-recracion.avif",
+      category: "magia",
+      author: "Elena Vargas",
+      authorImage: "/lovable-uploads/13ad09_b5f12e308c45464ba8d374300ba49c40.avif",
+      tags: ["magia educativa", "aprendizaje lúdico", "desarrollo infantil", "pedagogía alternativa"],
+      readTime: 9
+    },
+    {
       id: 4,
-      title: "Actividades al aire libre para fiestas infantiles",
-      excerpt: "Descubre las mejores actividades para realizar al aire libre y mantener entretenidos a los niños.",
-      content: "Contenido completo del artículo...",
-      date: "2025-03-20",
-      image: "https://images.unsplash.com/photo-1472162072942-cd5147eb3902?q=80&w=2069&auto=format&fit=crop",
+      title: "10 Actividades al Aire Libre para Animar Fiestas Infantiles",
+      excerpt: "Descubre actividades divertidas y seguras para realizar en espacios abiertos que garantizarán el éxito de tu próxima fiesta infantil.",
+      content: "Organizar actividades al aire libre es una excelente manera de aprovechar los espacios abiertos y permitir que los niños liberen energía de forma saludable durante las celebraciones. En este artículo, presentamos diez propuestas de juegos y dinámicas especialmente diseñadas para entretener a grupos de diferentes edades en jardines, parques o patios. Desde circuitos de obstáculos y búsquedas del tesoro temáticas hasta juegos de agua para días calurosos y actividades creativas con elementos naturales, estas ideas combinan diversión, ejercicio y aprendizaje. Además, incluimos recomendaciones de seguridad para cada actividad y alternativas para adaptar las propuestas según las condiciones climáticas.",
+      date: "2023-09-20",
+      image: "/lovable-uploads/actividades-recreacion-2.avif",
       category: "actividades",
-      author: "Pedro Animador",
-      authorImage: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop",
-      tags: ["juegos", "exterior", "diversión"],
-      readTime: 4
+      author: "Pedro Sánchez",
+      authorImage: "/lovable-uploads/13ad09_a9b656a4c23343a1ac29e765273b82c7.avif",
+      tags: ["juegos al aire libre", "actividades infantiles", "fiestas en exterior", "recreación infantil"],
+      readTime: 6
     },
     {
       id: 5,
-      title: "Cómo elegir la temática perfecta para un cumpleaños",
-      excerpt: "Guía paso a paso para seleccionar la temática ideal según los gustos y edad del niño.",
-      content: "Contenido completo del artículo...",
-      date: "2025-03-15",
-      image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop",
+      title: "Guía Completa para Elegir la Temática Perfecta para el Cumpleaños de tu Hijo",
+      excerpt: "Aprende a seleccionar la temática ideal que encantará a tu hijo y facilitará la organización de una celebración coherente y memorable.",
+      content: "La elección de la temática es uno de los primeros y más importantes pasos en la planificación de un cumpleaños infantil exitoso. En esta guía completa, analizamos los factores clave que debes considerar para seleccionar un tema que no solo emocione al festejado, sino que también sea práctico de implementar. Exploramos cómo evaluar los intereses actuales del niño, considerar la edad y personalidad, y valorar las posibilidades que ofrece cada temática en términos de decoración, actividades y gastronomía. Presentamos un análisis detallado de las temáticas más populares por rangos de edad, desde opciones para preescolares hasta preadolescentes, con ejemplos concretos de cómo desarrollar cada concepto de manera integral y coherente en todos los aspectos de la celebración.",
+      date: "2023-09-15",
+      image: "/lovable-uploads/fiesta-infantil-3.avif",
       category: "consejos",
-      author: "Ana Planificadora",
-      authorImage: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop",
-      tags: ["temáticas", "cumpleaños", "planificación"],
+      author: "Ana Morales",
+      authorImage: "/lovable-uploads/13ad09_6efb3142bba1429199dd1e52b6aaaa17.avif",
+      tags: ["temáticas infantiles", "planificación de cumpleaños", "fiestas personalizadas", "celebraciones infantiles"],
       readTime: 8
     },
     {
       id: 6,
-      title: "Los colores y su efecto psicológico en la decoración de eventos",
-      excerpt: "Aprende cómo utilizar el poder de los colores para crear el ambiente perfecto en cualquier celebración.",
-      content: "Contenido completo del artículo...",
-      date: "2025-03-05",
-      image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop",
+      title: "Psicología del Color: Cómo Crear Ambientes Emocionalmente Positivos en Eventos Infantiles",
+      excerpt: "Descubre cómo utilizar estratégicamente los colores para estimular emociones específicas y crear espacios que potencien la diversión y el bienestar de los niños.",
+      content: "Los colores tienen un impacto profundo en nuestras emociones y comportamiento, especialmente en los niños, quienes son particularmente sensibles a los estímulos visuales. Este artículo profundiza en la psicología del color aplicada a eventos infantiles, explicando cómo cada tonalidad puede influir en el estado de ánimo y la experiencia de los pequeños invitados. Analizamos las combinaciones cromáticas más efectivas según el tipo de evento y la edad de los participantes, desde paletas energizantes ideales para actividades dinámicas hasta esquemas más relajantes para momentos de creatividad o descanso. También ofrecemos pautas prácticas para implementar estas estrategias cromáticas en elementos decorativos, vestuario, iluminación y hasta en la presentación de alimentos, creando una experiencia visual coherente que refuerce el tema del evento y promueva las emociones deseadas.",
+      date: "2023-09-05",
+      image: "/lovable-uploads/13ad09_995212c57adaead909ed96c686ed9100.avif",
       category: "tendencias",
-      author: "Miguel Psicólogo",
-      authorImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop",
-      tags: ["psicología", "colores", "decoración"],
+      author: "Miguel Herrera",
+      authorImage: "/lovable-uploads/13ad09_4ac12714c20d44f3a3e0cde37694b036.avif",
+      tags: ["psicología infantil", "decoración con colores", "ambientación de eventos", "diseño de experiencias"],
       readTime: 10
     },
     {
       id: 7,
-      title: "Trucos para fotos memorables en eventos infantiles",
-      excerpt: "Consejos de fotógrafos profesionales para capturar los mejores momentos en las celebraciones de los más pequeños.",
-      content: "Contenido completo del artículo...",
-      date: "2025-02-28",
-      image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=2075&auto=format&fit=crop",
+      title: "Fotografía Infantil: Técnicas para Capturar Momentos Auténticos en Celebraciones",
+      excerpt: "Aprende estrategias profesionales para documentar de manera natural y emotiva los momentos más especiales de las fiestas infantiles.",
+      content: "Capturar la espontaneidad y alegría genuina de los niños durante una celebración requiere técnicas específicas que van más allá de la fotografía convencional. En este artículo, fotógrafos especializados en eventos infantiles comparten sus mejores estrategias para documentar momentos auténticos y emotivos. Desde la preparación del equipo adecuado y la configuración óptima de la cámara para diferentes condiciones de iluminación, hasta técnicas de composición que resaltan las expresiones naturales y la interacción entre los niños. Exploramos el enfoque documental que permite narrar visualmente la historia del evento, identificando momentos clave como la llegada de invitados, reacciones ante sorpresas, juegos grupales y, por supuesto, los rituales tradicionales como soplar las velas o abrir regalos. También incluimos consejos para involucrar a los niños en el proceso fotográfico de manera divertida, logrando su cooperación sin sacrificar la naturalidad.",
+      date: "2023-08-28",
+      image: "/lovable-uploads/13ad09_506ccb6588250eb61e68b7fb4d1d7e9b.avif",
       category: "consejos",
-      author: "Lucía Fotógrafa",
-      authorImage: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=2071&auto=format&fit=crop",
-      tags: ["fotografía", "momentos", "recuerdos"],
-      readTime: 6
-    },
-    {
-      id: 8,
-      title: "Juegos tradicionales que nunca pasan de moda",
-      excerpt: "Una recopilación de juegos clásicos que siguen divirtiendo a generaciones de niños.",
-      content: "Contenido completo del artículo...",
-      date: "2025-02-20",
-      image: "https://images.unsplash.com/photo-1610890778028-b89d3b37ae3e?q=80&w=1996&auto=format&fit=crop",
-      category: "actividades",
-      author: "Roberto Historiador",
-      authorImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop",
-      tags: ["juegos", "tradición", "diversión"],
+      author: "Lucía Jiménez",
+      authorImage: "/lovable-uploads/13ad09_930ab2902b55450ba41d4d2e9cc6daab.avif",
+      tags: ["fotografía infantil", "recuerdos de eventos", "técnicas fotográficas", "documentación de fiestas"],
       readTime: 7
     },
     {
+      id: 8,
+      title: "Juegos Tradicionales Reinventados: Cómo Adaptar Clásicos para las Nuevas Generaciones",
+      excerpt: "Redescubre juegos de toda la vida con un toque moderno que fascinará a los niños de hoy mientras preservas la esencia de estas actividades atemporales.",
+      content: "Los juegos tradicionales han entretenido a generaciones de niños gracias a su simplicidad y capacidad para fomentar habilidades fundamentales. Sin embargo, captar la atención de los más pequeños en la era digital puede requerir algunas adaptaciones creativas. Este artículo explora cómo reinventar juegos clásicos como la gallinita ciega, el escondite, las carreras de sacos o el pañuelo, incorporando elementos temáticos, tecnología accesible o variaciones en las reglas que los hagan más dinámicos y atractivos para los niños contemporáneos. Para cada juego, presentamos múltiples versiones adaptadas a diferentes edades, espacios y número de participantes, manteniendo siempre los beneficios originales en términos de desarrollo físico, cognitivo y social. Además, incluimos testimonios de educadores y animadores que han implementado estas versiones actualizadas con gran éxito en diversos eventos infantiles.",
+      date: "2023-08-20",
+      image: "/lovable-uploads/13ad09_cbc133ff8bcc4f43b5f98d92911385ac.avif",
+      category: "actividades",
+      author: "Roberto Díaz",
+      authorImage: "/lovable-uploads/13ad09_861c2e3508be42bfa4df2b5ee1def88b.avif",
+      tags: ["juegos tradicionales", "actividades grupales", "animación infantil", "juegos adaptados"],
+      readTime: 8
+    },
+    {
       id: 9,
-      title: "La importancia de la música en las fiestas infantiles",
-      excerpt: "Cómo elegir la música adecuada para crear el ambiente perfecto para cada edad.",
-      content: "Contenido completo del artículo...",
-      date: "2025-02-15",
-      image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=2070&auto=format&fit=crop",
+      title: "La Banda Sonora Perfecta: Creando Listas de Reproducción por Edades para Eventos Infantiles",
+      excerpt: "Guía especializada para seleccionar la música ideal que mantendrá la energía y diversión en cada momento de la celebración según la edad de los participantes.",
+      content: "La música es un elemento fundamental que establece el ritmo y la atmósfera de cualquier celebración infantil. Este artículo ofrece una guía completa para crear listas de reproducción efectivas y apropiadas para diferentes grupos de edad, desde bebés y preescolares hasta preadolescentes. Analizamos los géneros musicales más adecuados para cada etapa de desarrollo, considerando preferencias típicas, capacidad de atención y nivel de energía. Proporcionamos recomendaciones específicas de canciones organizadas por momentos del evento: música de bienvenida, canciones para actividades dirigidas, temas para bailes libres y melodías más tranquilas para momentos de comida o despedida. También incluimos consejos técnicos sobre equipos de sonido adecuados según el espacio, volumen recomendado para proteger los oídos infantiles y aplicaciones útiles para gestionar las listas de reproducción de manera eficiente durante el evento.",
+      date: "2023-08-15",
+      image: "/lovable-uploads/13ad09_d1314dfa45674cdebe64ba09122392f0.avif",
       category: "eventos",
-      author: "Carmen Musicóloga",
-      authorImage: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop",
-      tags: ["música", "ambiente", "celebración"],
-      readTime: 5
+      author: "Carmen Vega",
+      authorImage: "/lovable-uploads/13ad09_6059cd25dee485b8d888f935c2bd4271.avif",
+      tags: ["música infantil", "ambientación sonora", "listas de reproducción", "entretenimiento musical"],
+      readTime: 6
     }
   ];
 
@@ -308,7 +334,9 @@ const BlogPage = () => {
                           </span>
                         </div>
                         <h3 className="text-xl font-bold font-comic hover:text-recreacion-blue transition-colors duration-200 line-clamp-2">
-                          {post.title}
+                          <Link to={`/blog/${post.title.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-')}`}>
+                            {post.title}
+                          </Link>
                         </h3>
                       </CardHeader>
                       <CardContent>
@@ -324,8 +352,10 @@ const BlogPage = () => {
                             />
                             <span className="text-sm font-medium">{post.author}</span>
                           </div>
-                          <Button variant="ghost" className="text-recreacion-purple hover:bg-recreacion-purple/10 p-0 h-auto rounded-full">
-                            <ArrowRight className="h-5 w-5" />
+                          <Button variant="ghost" className="text-recreacion-purple hover:bg-recreacion-purple/10 p-0 h-auto rounded-full" asChild>
+                            <Link to={`/blog/${post.title.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-')}`}>
+                              <ArrowRight className="h-5 w-5" />
+                            </Link>
                           </Button>
                         </div>
                       </CardContent>
@@ -411,7 +441,9 @@ const BlogPage = () => {
                         </span>
                       </div>
                       <h3 className="text-lg font-bold font-comic hover:text-recreacion-blue transition-colors duration-200 line-clamp-2">
-                        {post.title}
+                        <Link to={`/blog/${post.title.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-')}`}>
+                          {post.title}
+                        </Link>
                       </h3>
                     </CardHeader>
                     <CardContent>
@@ -427,8 +459,10 @@ const BlogPage = () => {
                           />
                           <span className="text-sm font-medium">{post.author}</span>
                         </div>
-                        <Button variant="ghost" className="text-recreacion-purple hover:bg-recreacion-purple/10 p-0 h-auto rounded-full">
-                          <ArrowRight className="h-5 w-5" />
+                        <Button variant="ghost" className="text-recreacion-purple hover:bg-recreacion-purple/10 p-0 h-auto rounded-full" asChild>
+                          <Link to={`/blog/${post.title.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-')}`}>
+                            <ArrowRight className="h-5 w-5" />
+                          </Link>
                         </Button>
                       </div>
                       <div className="mt-4 flex flex-wrap gap-2">
